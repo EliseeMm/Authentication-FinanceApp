@@ -19,5 +19,6 @@ public class Main {
 
         dao.insertUserNameAndPassword(userName,hashPassword);
 
+        System.out.println(dao.getHashPassword(userName));
     }
 }

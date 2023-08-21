@@ -42,4 +42,17 @@ public class DatabaseAccessCode {
             throw new RuntimeException(e);
         }
     }
+
+    public String getHashPassword(String username){
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT hashPass FROM passwords WHERE username = ?");
+            preparedStatement.setString(1,username);
+            preparedStatement.execute();
+            ResultSet rs = preparedStatement.getResultSet();
+
+            return rs.getString("hashPass");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
