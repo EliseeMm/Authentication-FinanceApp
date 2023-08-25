@@ -1,4 +1,8 @@
+import AccessValidation.Login;
+import AccessValidation.SignUp;
+import AccountCreation.AccNumbers;
 import DatabaseAccess.DatabaseAccessCode;
+import PasswordManagement.PBKDF2;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -13,7 +17,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         String input = scanner.nextLine();
-        DatabaseAccessCode dao = new DatabaseAccessCode();
+        DatabaseAccessCode dao = new DatabaseAccessCode("passwords.db");
         PBKDF2 pbkdf2c = new PBKDF2();
 
         if(input.equalsIgnoreCase("1")){
@@ -22,7 +26,10 @@ public class Main {
             String password = login.getPassword();
 
             String hashSaved = dao.getHashPassword(username);
-            System.out.println(pbkdf2c.doHashPasswordsMatch(hashSaved,password));
+            if(pbkdf2c.doHashPasswordsMatch(hashSaved,password)){
+                Transactions transactions = new Transactions(dao.getOpeningBalance(username));
+                System.out.println("Logged in");
+            }
 
 
         } else if (input.equalsIgnoreCase("2")) {
@@ -35,7 +42,7 @@ public class Main {
 
             dao.insertUserNameAndPassword(userName,hashPassword);
 
-            dao.addAccountNumber(dao.getPrimaryID(userName),AccNumbers.generateAccountNumber());
+            dao.addAccountNumber(dao.getPrimaryID(userName), AccNumbers.generateAccountNumber());
         }
 
 

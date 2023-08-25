@@ -5,18 +5,13 @@ import java.util.Arrays;
 
 public class DatabaseAccessCode {
 
-    private static final  String DISK_URL = "jdbc:sqlite:passwords.db";
+    private static final  String DISK_URL = "jdbc:sqlite:";
 
-    public static final Connection connection;
-    static {
-        try {
-            connection = DriverManager.getConnection(DISK_URL);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    public static Connection connection;
 
-    public DatabaseAccessCode(){
+    public DatabaseAccessCode(String databaseName) throws SQLException {
+
+        connection = DriverManager.getConnection(DISK_URL+databaseName);
         initializeDataBase();
         accountNumbers();
     }
@@ -39,6 +34,7 @@ public class DatabaseAccessCode {
             PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS accountNumbers(" +
                     "accountID INTEGER PRIMARY KEY AUTOINCREMENT, "+
                     "accountNumber VARCHAR(11), " +
+                    "balance INTEGER DEFAULT 0, " +
                     "accountHolderID INTEGER, "+
                     "FOREIGN KEY (accountHolderID) REFERENCES accountHolders (accountHolderID))"
                     );
@@ -104,6 +100,20 @@ public class DatabaseAccessCode {
             ps.setString(1,accNumber);
             ps.setInt(2,accountHolderID);
             ps.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int getOpeningBalance(String userName){
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT balance FROM accountNumbers an,accountHolders ah " +
+                    "WHERE ah.username = ? " +
+                    "AND an.accountHolderId = ah.accountHolderID");
+            ps.setString(1,userName);
+            ps.execute();
+            ResultSet rs = ps.getResultSet();
+            return rs.getInt("balance");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
