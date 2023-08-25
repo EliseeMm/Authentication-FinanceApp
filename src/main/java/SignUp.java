@@ -6,9 +6,11 @@ public class SignUp {
     private String username;
     private final Scanner scanner = new Scanner(System.in);
 
+    public SignUp(){
+        setLoginDetails();
+    }
 
-
-    public void setLoginDetails() {
+    private void setLoginDetails() {
 
         this.username = confirmUserName();
         this.password = confirmLoginPassword();
@@ -59,12 +61,6 @@ public class SignUp {
     private boolean doesNotMatch(String a,String b){
         return !a.equals(b);
     }
-
-    public static void main(String[] args) {
-        SignUp signUp = new SignUp();
-        signUp.setLoginDetails();
-    }
-
     public String getPassword() {
         return password;
     }

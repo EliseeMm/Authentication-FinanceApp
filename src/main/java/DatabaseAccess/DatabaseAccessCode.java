@@ -1,6 +1,8 @@
 package DatabaseAccess;
 
 import java.sql.*;
+import java.util.Arrays;
+
 public class DatabaseAccessCode {
 
     private static final  String DISK_URL = "jdbc:sqlite:passwords.db";
@@ -16,14 +18,30 @@ public class DatabaseAccessCode {
 
     public DatabaseAccessCode(){
         initializeDataBase();
+        accountNumbers();
     }
 
     public void initializeDataBase(){
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS passwords(" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS accountHolders(" +
+                    "accountHolderID INTEGER PRIMARY KEY AUTOINCREMENT, "+
                     "username VARCHAR(10) NOT NULL, " +
-                    "hashPass TEXT NOT NULL)");
+                    "hashPass TEXT NOT NULL" +
+                    ")");
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void accountNumbers(){
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS accountNumbers(" +
+                    "accountID INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "accountNumber VARCHAR(11), " +
+                    "accountHolderID INTEGER, "+
+                    "FOREIGN KEY (accountHolderID) REFERENCES accountHolders (accountHolderID))"
+                    );
             preparedStatement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -33,7 +51,7 @@ public class DatabaseAccessCode {
 
     public void insertUserNameAndPassword(String userName, String hashPassword){
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO passwords(username,hashPass) " +
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO accountHolders(username,hashPass) " +
                     "VALUES(?,?)");
             preparedStatement.setString(1,userName);
             preparedStatement.setString(2,hashPassword);
@@ -45,12 +63,47 @@ public class DatabaseAccessCode {
 
     public String getHashPassword(String username){
         try{
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT hashPass FROM passwords WHERE username = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT hashPass FROM accountHolders WHERE username = ?");
             preparedStatement.setString(1,username);
             preparedStatement.execute();
             ResultSet rs = preparedStatement.getResultSet();
 
             return rs.getString("hashPass");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String doesAccountNumberExists(String accountNumber) throws SQLException {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT accountNumber FROM accountNumbers WHERE accountNumber = ?");
+            preparedStatement.setString(1, accountNumber);
+            preparedStatement.execute();
+            ResultSet rs = preparedStatement.getResultSet();
+
+            return rs.getString("accountNumber");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int getPrimaryID(String username){
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT accountHolderID FROM accountHolders WHERE username = ? ");
+            ps.setString(1,username);
+            ps.execute();
+            ResultSet rs = ps.getResultSet();
+            return rs.getInt("accountHolderID");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void addAccountNumber(int accountHolderID,String accNumber){
+        try{
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO accountNumbers(accountNumber,accountHolderID) VALUES(?,?)");
+            ps.setString(1,accNumber);
+            ps.setInt(2,accountHolderID);
+            ps.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
