@@ -3,10 +3,12 @@ import AccessValidation.SignUp;
 import AccountCreation.AccNumbers;
 import DatabaseAccess.DatabaseAccessCode;
 import PasswordManagement.PBKDF2;
+import Transact.SendMoney;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class Main {
@@ -27,8 +29,33 @@ public class Main {
 
             String hashSaved = dao.getHashPassword(username);
             if(pbkdf2c.doHashPasswordsMatch(hashSaved,password)){
-                Transactions transactions = new Transactions(dao.getOpeningBalance(username));
-                System.out.println("Logged in");
+                System.out.println("Enter acc number:");
+                String acc = scanner.nextLine();
+
+                if(dao.validAccountNumber(acc)) {
+                    System.out.println("Amount:");
+                    int amount = scanner.nextInt();
+
+                    int userCurrentBalance = dao.getCurrentBalance(username);
+
+                    SendMoney sendMoney = new SendMoney(userCurrentBalance, amount);
+                    sendMoney.updateBalance();
+
+                    int updatedBalance = sendMoney.getCurrentBalance();
+
+
+                    String accountNumber = dao.getAccountNumber(username);
+
+
+                    dao.decreaseSenderBalance(updatedBalance, accountNumber); // updating senders balance
+
+
+                    // updating recipient balance
+                    int currentBalanceOfRecipient = dao.getCurrentBalanceAccNum(acc);
+                    dao.increaseRecipientBalance(currentBalanceOfRecipient + amount, acc);
+
+                    System.out.println("Logged in");
+                }
             }
 
 

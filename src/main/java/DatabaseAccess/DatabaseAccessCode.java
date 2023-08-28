@@ -1,7 +1,6 @@
 package DatabaseAccess;
 
 import java.sql.*;
-import java.util.Arrays;
 
 public class DatabaseAccessCode {
 
@@ -34,7 +33,7 @@ public class DatabaseAccessCode {
             PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS accountNumbers(" +
                     "accountID INTEGER PRIMARY KEY AUTOINCREMENT, "+
                     "accountNumber VARCHAR(11), " +
-                    "balance INTEGER DEFAULT 0, " +
+                    "balance INTEGER DEFAULT 1000, " +
                     "accountHolderID INTEGER, "+
                     "FOREIGN KEY (accountHolderID) REFERENCES accountHolders (accountHolderID))"
                     );
@@ -105,7 +104,7 @@ public class DatabaseAccessCode {
         }
     }
 
-    public int getOpeningBalance(String userName){
+    public int getCurrentBalance(String userName){
         try{
             PreparedStatement ps = connection.prepareStatement("SELECT balance FROM accountNumbers an,accountHolders ah " +
                     "WHERE ah.username = ? " +
@@ -118,4 +117,70 @@ public class DatabaseAccessCode {
             throw new RuntimeException(e);
         }
     }
+    public int getCurrentBalanceAccNum(String accountNumber){
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT balance FROM accountNumbers an " +
+                    "WHERE an.accountNumber = ? ");
+            ps.setString(1,accountNumber);
+            ps.execute();
+            ResultSet rs = ps.getResultSet();
+            return rs.getInt("balance");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getAccountNumber(String userName){
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT accountNumber " +
+                    "FROM accountNumbers an, accountHolders ah " +
+                    "WHERE ah.username = ? " +
+                    "AND an.accountHolderId = ah.accountHolderID");
+            preparedStatement.setString(1, userName);
+            preparedStatement.execute();
+            ResultSet rs = preparedStatement.getResultSet();
+
+            return rs.getString("accountNumber");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean validAccountNumber(String accountNumber){
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT accountNumber FROM accountNumbers an WHERE an.accountNumber = ?");
+            ps.setString(1,accountNumber);
+            ps.execute();
+            ResultSet rs = ps.getResultSet();
+            String accountNumb = rs.getString("accountNumber");
+            return accountNumb != null;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void decreaseSenderBalance(int newBalance, String accountNumber){
+        try{
+            PreparedStatement ps = connection.prepareStatement("UPDATE accountNumbers SET balance = ? WHERE accountNumber = ? ");
+            ps.setInt(1, newBalance);
+            ps.setString(2,accountNumber);
+            ps.execute();
+            ps.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void increaseRecipientBalance(int newBalance, String accountNumber){
+        try{
+            PreparedStatement ps = connection.prepareStatement("UPDATE accountNumbers SET balance = ? WHERE accountNumber = ? ");
+            ps.setInt(1, newBalance);
+            ps.setString(2,accountNumber);
+            ps.execute();
+            ps.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
