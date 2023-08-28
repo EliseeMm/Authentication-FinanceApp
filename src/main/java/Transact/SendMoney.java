@@ -6,12 +6,14 @@ public class SendMoney extends Transactions {
         super(currentBalance, amount);
     }
 
-    public void updateBalance(){
+    public boolean updateBalance(){
         if(isTransactionPossible()){
             currentBalance -= amount;
+            return true;
         }
         else {
             System.out.println("Insufficient funds");
+            return false;
         }
     }
 }

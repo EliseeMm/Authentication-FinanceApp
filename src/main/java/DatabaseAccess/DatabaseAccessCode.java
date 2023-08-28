@@ -1,6 +1,7 @@
 package DatabaseAccess;
 
 import java.sql.*;
+import java.time.LocalDate;
 
 public class DatabaseAccessCode {
 
@@ -22,6 +23,36 @@ public class DatabaseAccessCode {
                     "username VARCHAR(10) NOT NULL, " +
                     "hashPass TEXT NOT NULL" +
                     ")");
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void accountTransactionsTracker(String accNumber){
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS acc"+ accNumber +"("+
+                    "transactionID  INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "TransactionDate DATE, " +
+                    "Reference TEXT, " +
+                    "Amount INTEGER, " +
+                    "Balance INTEGER" +
+                    ")");
+
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void updateTransactionTracker(String accNumber, LocalDate date, String ref,int amount,int balance){
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO acc"+ accNumber +"("+
+                    "TransactionDate," +
+                    "Reference,Amount,Balance) " +
+                    "VALUES (?,?,?,?)");
+            preparedStatement.setString(1, String.valueOf(date));
+            preparedStatement.setString(2,ref);
+            preparedStatement.setInt(3,amount);
+            preparedStatement.setInt(4,balance);
             preparedStatement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
