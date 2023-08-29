@@ -12,8 +12,6 @@ public class DatabaseAccessCode {
     public DatabaseAccessCode(String databaseName) throws SQLException {
 
         connection = DriverManager.getConnection(DISK_URL+databaseName);
-        initializeDataBase();
-        accountNumbers();
     }
 
     public void initializeDataBase(){
@@ -54,6 +52,7 @@ public class DatabaseAccessCode {
             preparedStatement.setInt(3,amount);
             preparedStatement.setInt(4,balance);
             preparedStatement.execute();
+            preparedStatement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -69,6 +68,7 @@ public class DatabaseAccessCode {
                     "FOREIGN KEY (accountHolderID) REFERENCES accountHolders (accountHolderID))"
                     );
             preparedStatement.execute();
+            preparedStatement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -82,11 +82,12 @@ public class DatabaseAccessCode {
             preparedStatement.setString(1,userName);
             preparedStatement.setString(2,hashPassword);
             preparedStatement.execute();
+            preparedStatement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
+//52802370886
     public String getHashPassword(String username){
         try{
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT hashPass FROM accountHolders WHERE username = ?");
@@ -134,20 +135,6 @@ public class DatabaseAccessCode {
             throw new RuntimeException(e);
         }
     }
-
-    public int getCurrentBalance(String userName){
-        try{
-            PreparedStatement ps = connection.prepareStatement("SELECT balance FROM accountNumbers an,accountHolders ah " +
-                    "WHERE ah.username = ? " +
-                    "AND an.accountHolderId = ah.accountHolderID");
-            ps.setString(1,userName);
-            ps.execute();
-            ResultSet rs = ps.getResultSet();
-            return rs.getInt("balance");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
     public int getCurrentBalanceAccNum(String accountNumber){
         try{
             PreparedStatement ps = connection.prepareStatement("SELECT balance FROM accountNumbers an " +
@@ -189,8 +176,7 @@ public class DatabaseAccessCode {
             throw new RuntimeException(e);
         }
     }
-
-    public void decreaseSenderBalance(int newBalance, String accountNumber){
+    public void updateBalance(int newBalance, String accountNumber){
         try{
             PreparedStatement ps = connection.prepareStatement("UPDATE accountNumbers SET balance = ? WHERE accountNumber = ? ");
             ps.setInt(1, newBalance);
@@ -201,17 +187,8 @@ public class DatabaseAccessCode {
             throw new RuntimeException(e);
         }
     }
-
-    public void increaseRecipientBalance(int newBalance, String accountNumber){
-        try{
-            PreparedStatement ps = connection.prepareStatement("UPDATE accountNumbers SET balance = ? WHERE accountNumber = ? ");
-            ps.setInt(1, newBalance);
-            ps.setString(2,accountNumber);
-            ps.execute();
-            ps.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public void closeConnection() throws SQLException {
+        connection.close();
     }
 
 }

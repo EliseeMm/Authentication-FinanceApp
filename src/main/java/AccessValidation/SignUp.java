@@ -1,14 +1,18 @@
 package AccessValidation;
 
+import Servers.ClientHandler;
+import org.json.JSONObject;
+
 import java.util.Scanner;
 
-public class SignUp {
+public class SignUp extends ServerCommunication{
     private String password;
-
+    private ClientHandler clientHandler;
     private String username;
     private final Scanner scanner = new Scanner(System.in);
 
-    public SignUp(){
+    public SignUp(ClientHandler clientHandler){
+        super(clientHandler);
         setLoginDetails();
     }
 
@@ -71,4 +75,13 @@ public class SignUp {
         return username;
     }
 
+    @Override
+    public JSONObject getResponse() {
+        return null;
+    }
+
+    @Override
+    public void execute() {
+
+    }
 }
