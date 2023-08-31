@@ -1,6 +1,7 @@
 package Transact;
 
 import AccessValidation.ServerCommunication;
+import BalanceView.MiniStatement;
 import Servers.ClientHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,6 +39,7 @@ public class SavingsDeposit extends ServerCommunication {
                 result = "Deposit Failed";
             }
             response.put("message", result);
+            response.put("Balance",currentBalance);
             dao.closeConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);

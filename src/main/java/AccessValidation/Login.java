@@ -1,5 +1,6 @@
 package AccessValidation;
 
+import BalanceView.MiniStatement;
 import Servers.ClientHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,6 +37,7 @@ public class Login extends ServerCommunication {
                 result = "Login failed";
             }
             response.put("message", result);
+            response.put("Balance",dao.getCurrentBalanceAccNum(clientHandler.getAccountNumber()));
             dao.closeConnection();
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | SQLException e) {
             throw new RuntimeException(e);

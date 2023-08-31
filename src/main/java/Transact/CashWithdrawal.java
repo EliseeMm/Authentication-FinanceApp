@@ -14,6 +14,7 @@ public class CashWithdrawal extends ServerCommunication {
         super(clientHandler, array);
         this.accountNumber = clientHandler.getAccountNumber();
         this.amount = Integer.parseInt(array.get(0).toString());
+        this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
     }
 
     @Override
@@ -27,7 +28,6 @@ public class CashWithdrawal extends ServerCommunication {
         String result;
 
         try{
-            int currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
             if(isTransactionPossible(currentBalance)){
                 currentBalance -= amount;
                 dao.updateBalance(currentBalance,accountNumber);
@@ -38,6 +38,7 @@ public class CashWithdrawal extends ServerCommunication {
                 result = "Withdrawal Failed,Insufficient funds";
             }
             response.put("message",result);
+            response.put("Balance",currentBalance);
             dao.closeConnection();
         } catch (JSONException | SQLException e) {
             throw new RuntimeException(e);

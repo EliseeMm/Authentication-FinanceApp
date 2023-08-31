@@ -1,6 +1,7 @@
 package Transact;
 
 import AccessValidation.ServerCommunication;
+import BalanceView.MiniStatement;
 import Servers.ClientHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,34 +29,36 @@ public class SendMoney extends ServerCommunication{
     public void execute() {
         response = new JSONObject();
         String result;
-        if(isTransactionPossible(currentBalance) && validAccount()){
-            currentBalance -= amount;
-
-            // senders balance
-            updateBalances(currentBalance,accountNumber);
-
-            // recipient balance
-            int recBalance = dao.getCurrentBalanceAccNum(recipientAccNum);
-            updateBalances(recBalance+amount,recipientAccNum);
-
-            //senders statement
-            updateAccounts(accountNumber,-amount);
-
-            // recipient statement
-            updateAccounts(recipientAccNum,amount);
-
-            result = "Payment Successful";
-        } else if (!validAccount()) {
-            result = "Invalid Account Number";
-        } else {
-            result = "Insufficient funds";
-        }
-        response.put("message",result);
         try {
+            if (isTransactionPossible(currentBalance) && validAccount()) {
+                currentBalance -= amount;
+
+                // senders balance
+                updateBalances(currentBalance, accountNumber);
+
+                // recipient balance
+                int recBalance = dao.getCurrentBalanceAccNum(recipientAccNum);
+                updateBalances(recBalance + amount, recipientAccNum);
+
+                //senders statement
+                updateAccounts(accountNumber, -amount);
+
+                // recipient statement
+                updateAccounts(recipientAccNum, amount);
+
+                result = "Payment Successful";
+            } else if (!validAccount()) {
+                result = "Invalid Account Number";
+            } else {
+                result = "Insufficient funds";
+            }
+            response.put("message", result);
+            response.put("Balance",currentBalance);
             dao.closeConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
     }
     private boolean validAccount(){
         return dao.validAccountNumber(recipientAccNum);

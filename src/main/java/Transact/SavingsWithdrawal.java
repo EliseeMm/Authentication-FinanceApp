@@ -1,6 +1,7 @@
 package Transact;
 
 import AccessValidation.ServerCommunication;
+import BalanceView.MiniStatement;
 import Servers.ClientHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,7 +31,7 @@ public class SavingsWithdrawal extends ServerCommunication {
             if (isTransactionPossible(savingsBalance)) {
                 currentBalance += amount;
                 dao.updateSavings(savingsBalance - amount, accountNumber);
-                dao.updateBalance(currentBalance + amount, accountNumber);
+                dao.updateBalance(currentBalance, accountNumber);
                 dao.updateTransactionTracker(accountNumber, LocalDate.now(),"Savings Deposit",amount,currentBalance);
                 result = "Withdrawal Successful";
             }
@@ -38,6 +39,7 @@ public class SavingsWithdrawal extends ServerCommunication {
                 result = "Withdrawal failed";
             }
             response.put("message",result);
+            response.put("Balance",currentBalance);
             dao.closeConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
