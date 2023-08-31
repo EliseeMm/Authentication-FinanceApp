@@ -38,7 +38,8 @@ public class CashWithdrawal extends ServerCommunication {
                 result = "Withdrawal Failed,Insufficient funds";
             }
             response.put("message",result);
-        } catch (JSONException e) {
+            dao.closeConnection();
+        } catch (JSONException | SQLException e) {
             throw new RuntimeException(e);
         }
     }
