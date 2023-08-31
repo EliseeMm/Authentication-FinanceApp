@@ -7,14 +7,11 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
-    private Socket socket;
-    private BufferedReader bufferedReader;
-    private BufferedWriter bufferedWriter;
-    private Scanner scanner = new Scanner(System.in);
-
+    private final BufferedReader bufferedReader;
+    private final BufferedWriter bufferedWriter;
+    private final Scanner scanner = new Scanner(System.in);
 
     public Client(Socket socket){
-        this.socket = socket;
         try {
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -52,6 +49,11 @@ public class Client {
             case "payment" -> {
                 requestsArguments = new SendMoneyRequest().getRequest();
                 request.put("Request", "payment");
+                request.put("Arguments", requestsArguments.get("arguments"));
+            }
+            case "signup" -> {
+                requestsArguments = new SignUpRequest().getRequest();
+                request.put("Request", "signup");
                 request.put("Arguments", requestsArguments.get("arguments"));
             }
         }

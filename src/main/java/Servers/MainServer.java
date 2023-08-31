@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 
 public class MainServer implements Runnable {
-    private ServerSocket serverSocket;
+    private final ServerSocket serverSocket;
 
     public MainServer (ServerSocket serverSocket){
         this.serverSocket = serverSocket;

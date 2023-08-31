@@ -2,7 +2,6 @@ package AccountCreation;
 
 import DatabaseAccess.DatabaseAccessCode;
 
-import java.sql.SQLException;
 import java.util.Random;
 
 public class AccNumbers {
@@ -21,7 +20,7 @@ public class AccNumbers {
         return num.toString();
     }
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args){
         String accNum;
         do {
              accNum = generateAccountNumber();

@@ -101,7 +101,7 @@ public class DatabaseAccessCode {
         }
     }
 
-    public static String doesAccountNumberExists(String accountNumber) throws SQLException {
+    public static String doesAccountNumberExists(String accountNumber){
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT accountNumber FROM accountNumbers WHERE accountNumber = ?");
             preparedStatement.setString(1, accountNumber);

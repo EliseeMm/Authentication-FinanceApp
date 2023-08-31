@@ -3,7 +3,6 @@ package PasswordManagement;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
@@ -52,8 +51,7 @@ public class PBKDF2 {
         return hashPassword.equals(attemptHash);
     }
 
-    public byte[] getSaltByte(String salts) throws NoSuchAlgorithmException
-    {
+    public byte[] getSaltByte(String salts) {
         byte[] bytes = new byte[16];
         for(int i = 0; i < bytes.length ;i++)
         {

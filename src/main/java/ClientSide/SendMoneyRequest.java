@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import java.util.Scanner;
 
-public class SendMoneyRequest {
+public class SendMoneyRequest implements Requests {
     private final JSONObject request = new JSONObject();
     private final Scanner scanner = new Scanner(System.in);
 

@@ -10,24 +10,13 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class SendMoney extends ServerCommunication{
-    private DatabaseAccessCode dao = new DatabaseAccessCode("passwords.db");
+    private final DatabaseAccessCode dao = new DatabaseAccessCode("passwords.db");
     private JSONObject response;
     private final String accountNumber;
     public SendMoney(ClientHandler clientHandler,JSONArray args) throws SQLException {
         super(clientHandler,args);
         this.accountNumber = clientHandler.getAccountNumber();
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
-    }
-
-    public boolean updateBalance(){
-        if(isTransactionPossible(currentBalance)){
-            currentBalance -= amount;
-            return true;
-        }
-        else {
-            System.out.println("Insufficient funds");
-            return false;
-        }
     }
 
     @Override
