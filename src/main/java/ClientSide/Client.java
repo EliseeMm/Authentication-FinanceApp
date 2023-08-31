@@ -38,25 +38,25 @@ public class Client {
     public JSONObject createRequest(){
         String command = scanner.nextLine().toLowerCase();
         JSONObject request = new JSONObject();
-        JSONObject requestsArguments;
+        String requestString = "";
+        JSONObject requestsArguments = new JSONObject();
 
         switch (command) {
             case "login" -> {
                 requestsArguments = new LoginRequest().getRequest();
-                request.put("Request", "login");
-                request.put("Arguments", requestsArguments.get("arguments"));
             }
             case "payment" -> {
                 requestsArguments = new SendMoneyRequest().getRequest();
-                request.put("Request", "payment");
-                request.put("Arguments", requestsArguments.get("arguments"));
             }
             case "signup" -> {
                 requestsArguments = new SignUpRequest().getRequest();
-                request.put("Request", "signup");
-                request.put("Arguments", requestsArguments.get("arguments"));
+            }
+            case "savings deposit","savings withdrawal","cash withdrawal" -> {
+                requestsArguments = new SimpleRequests().getRequest();
             }
         }
+        request.put("Request",command);
+        request.put("Arguments",requestsArguments.get("arguments"));
         return request;
     }
 

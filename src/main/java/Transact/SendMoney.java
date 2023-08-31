@@ -1,7 +1,6 @@
 package Transact;
 
 import AccessValidation.ServerCommunication;
-import DatabaseAccess.DatabaseAccessCode;
 import Servers.ClientHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,13 +9,14 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class SendMoney extends ServerCommunication{
-    private final DatabaseAccessCode dao = new DatabaseAccessCode("passwords.db");
-    private JSONObject response;
-    private final String accountNumber;
+
     public SendMoney(ClientHandler clientHandler,JSONArray args) throws SQLException {
         super(clientHandler,args);
         this.accountNumber = clientHandler.getAccountNumber();
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
+        this.recipientAccNum = args.get(0).toString();
+        this.amount = Integer.parseInt(args.get(1).toString());
+        this.reference = args.get(2).toString();
     }
 
     @Override
@@ -51,6 +51,11 @@ public class SendMoney extends ServerCommunication{
             result = "Insufficient funds";
         }
         response.put("message",result);
+        try {
+            dao.closeConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
     private boolean validAccount(){
         return dao.validAccountNumber(recipientAccNum);

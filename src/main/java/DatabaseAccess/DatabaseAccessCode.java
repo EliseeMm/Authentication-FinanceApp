@@ -64,6 +64,7 @@ public class DatabaseAccessCode {
                     "accountID INTEGER PRIMARY KEY AUTOINCREMENT, "+
                     "accountNumber VARCHAR(11), " +
                     "balance INTEGER DEFAULT 1000, " +
+                    "savingsBalance INTEGER DEFAULT 0, "+
                     "accountHolderID INTEGER, "+
                     "FOREIGN KEY (accountHolderID) REFERENCES accountHolders (accountHolderID))"
                     );
@@ -148,6 +149,19 @@ public class DatabaseAccessCode {
         }
     }
 
+    public int getSavingsBalanceAccNum(String accountNumber){
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT savingsBalance FROM accountNumbers an " +
+                    "WHERE an.accountNumber = ? ");
+            ps.setString(1,accountNumber);
+            ps.execute();
+            ResultSet rs = ps.getResultSet();
+            return rs.getInt("savingsBalance");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String getAccountNumber(String userName){
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT accountNumber " +
@@ -187,8 +201,22 @@ public class DatabaseAccessCode {
             throw new RuntimeException(e);
         }
     }
+
+    public void updateSavings(int amount, String accountNumber){
+        try{
+            PreparedStatement ps = connection.prepareStatement("UPDATE accountNumbers SET savingsBalance = ? WHERE accountNumber = ?");
+            ps.setInt(1,amount);
+            ps.setString(2,accountNumber);
+            ps.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     public void closeConnection() throws SQLException {
         connection.close();
     }
+
 
 }

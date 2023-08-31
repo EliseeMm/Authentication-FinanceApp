@@ -1,8 +1,6 @@
 package AccessValidation;
 
 import AccountCreation.AccNumbers;
-import DatabaseAccess.DatabaseAccessCode;
-import PasswordManagement.PBKDF2;
 import Servers.ClientHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,10 +13,6 @@ import java.sql.SQLException;
 public class SignUp extends ServerCommunication {
     private final String password;
     private final String username;
-    private final DatabaseAccessCode dao = new DatabaseAccessCode("passwords.db");
-    private final PBKDF2 pbkdf2c = new PBKDF2();
-    private JSONObject response;
-
     public SignUp(ClientHandler clientHandler, JSONArray arguments) throws SQLException {
         super(clientHandler);
         this.username = arguments.get(0).toString();

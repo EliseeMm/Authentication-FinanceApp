@@ -4,9 +4,11 @@ import AccessValidation.ServerCommunication;
 import Servers.ClientHandler;
 import org.json.JSONObject;
 
+import java.sql.SQLException;
+
 public class InvalidCommand extends ServerCommunication {
     private JSONObject response;
-    public InvalidCommand(ClientHandler clientHandler) {
+    public InvalidCommand(ClientHandler clientHandler) throws SQLException {
         super(clientHandler);
     }
 

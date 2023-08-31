@@ -1,7 +1,5 @@
 package AccessValidation;
 
-import DatabaseAccess.DatabaseAccessCode;
-import PasswordManagement.PBKDF2;
 import Servers.ClientHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,12 +9,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
 
 public class Login extends ServerCommunication {
-    private final PBKDF2 pbkdf2c = new PBKDF2();
     private final String password;
-    private final DatabaseAccessCode dao = new DatabaseAccessCode("passwords.db");
     private final String username;
-    private JSONObject response;
-
     public Login(ClientHandler clientHandler, JSONArray arguments) throws SQLException {
         super(clientHandler);
         this.username = arguments.get(0).toString();
