@@ -54,6 +54,9 @@ public class Client {
             case "savings deposit","savings withdrawal","cash withdrawal" -> {
                 requestsArguments = new SimpleRequests().getRequest();
             }
+            case "mini statement"-> {
+                requestsArguments = new MiniStatementRequest().getRequest();
+            }
         }
         request.put("Request",command);
         request.put("Arguments",requestsArguments.get("arguments"));

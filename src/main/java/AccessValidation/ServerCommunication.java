@@ -1,5 +1,6 @@
 package AccessValidation;
 
+import BalanceView.MiniStatement;
 import DatabaseAccess.DatabaseAccessCode;
 import ErrorHandling.InvalidCommand;
 import PasswordManagement.PBKDF2;
@@ -57,6 +58,10 @@ public abstract class ServerCommunication implements ServerResponses {
                 }
                 case "cash withdrawal" -> {
                     return new CashWithdrawal(clientHandler,arguments);
+                }
+
+                case "mini statement" -> {
+                    return new MiniStatement(clientHandler);
                 }
                 default -> {
                     return new InvalidCommand(clientHandler);
