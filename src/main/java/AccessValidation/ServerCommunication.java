@@ -5,10 +5,7 @@ import DatabaseAccess.DatabaseAccessCode;
 import ErrorHandling.InvalidCommand;
 import PasswordManagement.PBKDF2;
 import Servers.ClientHandler;
-import Transact.CashWithdrawal;
-import Transact.SavingsDeposit;
-import Transact.SavingsWithdrawal;
-import Transact.SendMoney;
+import Transact.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -44,11 +41,11 @@ public abstract class ServerCommunication implements ServerResponses {
                 case "login" -> {
                     return new Login(clientHandler, arguments);
                 }
-                case "payment" -> {
-                    return new SendMoney(clientHandler, arguments);
-                }
                 case "signup" -> {
                     return new SignUp(clientHandler, arguments);
+                }
+                case "payment" -> {
+                    return new SendMoney(clientHandler, arguments);
                 }
                 case "savings deposit" ->{
                     return new SavingsDeposit(clientHandler,arguments);
@@ -59,7 +56,9 @@ public abstract class ServerCommunication implements ServerResponses {
                 case "cash withdrawal" -> {
                     return new CashWithdrawal(clientHandler,arguments);
                 }
-
+                case "cash deposit" ->{
+                    return new CashDeposit(clientHandler,arguments);
+                }
                 case "mini statement" -> {
                     return new MiniStatement(clientHandler);
                 }

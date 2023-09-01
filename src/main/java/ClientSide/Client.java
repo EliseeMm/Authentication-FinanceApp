@@ -51,7 +51,7 @@ public class Client {
             case "signup" -> {
                 requestsArguments = new SignUpRequest().getRequest();
             }
-            case "savings deposit","savings withdrawal","cash withdrawal" -> {
+            case "savings deposit","savings withdrawal","cash withdrawal","cash deposit" -> {
                 requestsArguments = new SimpleRequests().getRequest();
             }
             case "mini statement"-> {
