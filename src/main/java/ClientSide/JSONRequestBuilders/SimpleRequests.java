@@ -1,10 +1,11 @@
-package ClientSide;
+package ClientSide.JSONRequestBuilders;
 
+import ClientSide.JSONRequestBuilders.Requests;
 import org.json.JSONObject;
 
 import java.util.Scanner;
 
-public class SimpleRequests implements Requests{
+public class SimpleRequests implements Requests {
     private final Scanner scanner = new Scanner(System.in);
     private final JSONObject request = new JSONObject();
     @Override

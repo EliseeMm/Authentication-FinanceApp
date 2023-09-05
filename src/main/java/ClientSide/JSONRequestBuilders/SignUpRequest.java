@@ -1,5 +1,6 @@
-package ClientSide;
+package ClientSide.JSONRequestBuilders;
 
+import ClientSide.JSONRequestBuilders.Requests;
 import org.json.JSONObject;
 
 import java.util.Scanner;

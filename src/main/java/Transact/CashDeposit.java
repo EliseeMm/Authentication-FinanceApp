@@ -1,7 +1,8 @@
 package Transact;
 
 import AccessValidation.ServerCommunication;
-import Servers.ClientHandler;
+import Servers.ServerSocket.ClientHandler;
+import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class CashDeposit extends ServerCommunication {
-    public CashDeposit(ClientHandler clientHandler, JSONArray array) throws SQLException {
+    public CashDeposit(ClientStuff clientHandler, JSONArray array) throws SQLException {
         super(clientHandler, array);
         this.amount = Integer.parseInt(array.get(0).toString());
         this.accountNumber = clientHandler.getAccountNumber();

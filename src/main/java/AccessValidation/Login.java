@@ -1,7 +1,7 @@
 package AccessValidation;
 
-import BalanceView.MiniStatement;
-import Servers.ClientHandler;
+import Servers.ServerSocket.ClientHandler;
+import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -12,7 +12,7 @@ import java.sql.SQLException;
 public class Login extends ServerCommunication {
     private final String password;
     private final String username;
-    public Login(ClientHandler clientHandler, JSONArray arguments) throws SQLException {
+    public Login(ClientStuff clientHandler, JSONArray arguments) throws SQLException {
         super(clientHandler);
         this.username = arguments.get(0).toString();
         this.password = arguments.get(1).toString();
@@ -32,7 +32,7 @@ public class Login extends ServerCommunication {
         try {
             if (pbkdf2c.doHashPasswordsMatch(hashSaved, password)) {
                 result = "Login Successful";
-                this.clientHandler.setAccountNumber(dao.getAccountNumber(username));
+                clientHandler.setAccountNumber(dao.getAccountNumber(username));
             } else {
                 result = "Login failed";
             }

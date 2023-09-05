@@ -1,5 +1,6 @@
 package ClientSide;
 
+import ClientSide.JSONRequestBuilders.RequestJsonCreation;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -25,7 +26,7 @@ public class Client {
             String message = bufferedReader.readLine();
             System.out.println(message);
 
-            JSONObject command = createRequest();
+            JSONObject command = RequestJsonCreation.createRequest();
 
             bufferedWriter.write(command.toString());
             bufferedWriter.newLine();
@@ -35,33 +36,7 @@ public class Client {
         }
     }
 
-    public JSONObject createRequest(){
-        String command = scanner.nextLine().toLowerCase();
-        JSONObject request = new JSONObject();
-        String requestString = "";
-        JSONObject requestsArguments = new JSONObject();
 
-        switch (command) {
-            case "login" -> {
-                requestsArguments = new LoginRequest().getRequest();
-            }
-            case "payment" -> {
-                requestsArguments = new SendMoneyRequest().getRequest();
-            }
-            case "signup" -> {
-                requestsArguments = new SignUpRequest().getRequest();
-            }
-            case "savings deposit","savings withdrawal","cash withdrawal","cash deposit" -> {
-                requestsArguments = new SimpleRequests().getRequest();
-            }
-            case "mini statement"-> {
-                requestsArguments = new MiniStatementRequest().getRequest();
-            }
-        }
-        request.put("Request",command);
-        request.put("Arguments",requestsArguments.get("arguments"));
-        return request;
-    }
 
     public static void main(String[] args) throws IOException {
         Socket socket = new Socket("localhost",5000);

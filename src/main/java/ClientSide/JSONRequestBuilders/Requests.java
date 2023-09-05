@@ -1,4 +1,4 @@
-package ClientSide;
+package ClientSide.JSONRequestBuilders;
 
 import org.json.JSONObject;
 

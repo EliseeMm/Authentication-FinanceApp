@@ -1,14 +1,15 @@
 package ErrorHandling;
 
 import AccessValidation.ServerCommunication;
-import Servers.ClientHandler;
+import Servers.ServerSocket.ClientHandler;
+import Servers.ServerSocket.ClientStuff;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
 
 public class InvalidCommand extends ServerCommunication {
     private JSONObject response;
-    public InvalidCommand(ClientHandler clientHandler) throws SQLException {
+    public InvalidCommand(ClientStuff clientHandler) throws SQLException {
         super(clientHandler);
     }
 

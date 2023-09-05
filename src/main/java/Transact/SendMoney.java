@@ -1,8 +1,8 @@
 package Transact;
 
 import AccessValidation.ServerCommunication;
-import BalanceView.MiniStatement;
-import Servers.ClientHandler;
+import Servers.ServerSocket.ClientHandler;
+import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 public class SendMoney extends ServerCommunication{
 
-    public SendMoney(ClientHandler clientHandler,JSONArray args) throws SQLException {
+    public SendMoney(ClientStuff clientHandler, JSONArray args) throws SQLException {
         super(clientHandler,args);
         this.accountNumber = clientHandler.getAccountNumber();
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);

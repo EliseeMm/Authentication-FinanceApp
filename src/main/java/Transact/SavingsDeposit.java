@@ -1,8 +1,8 @@
 package Transact;
 
 import AccessValidation.ServerCommunication;
-import BalanceView.MiniStatement;
-import Servers.ClientHandler;
+import Servers.ServerSocket.ClientHandler;
+import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class SavingsDeposit extends ServerCommunication {
-    public SavingsDeposit(ClientHandler clientHandler, JSONArray array) throws SQLException {
+    public SavingsDeposit(ClientStuff clientHandler, JSONArray array) throws SQLException {
         super(clientHandler, array);
         this.accountNumber = clientHandler.getAccountNumber();
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);

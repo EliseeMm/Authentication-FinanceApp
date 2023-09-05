@@ -1,11 +1,10 @@
-package Servers;
+package Servers.ServerSocket;
 
-import DatabaseAccess.DatabaseAccessCode;
+import Servers.ServerSocket.ClientHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.SQLException;
 
 public class MainServer implements Runnable {
     private final ServerSocket serverSocket;
@@ -29,8 +28,4 @@ public class MainServer implements Runnable {
             throw new RuntimeException(e);
         }
     }
-
-
-
-
 }

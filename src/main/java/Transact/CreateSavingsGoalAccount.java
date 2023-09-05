@@ -1,7 +1,8 @@
 package Transact;
 
 import AccessValidation.ServerCommunication;
-import Servers.ClientHandler;
+import Servers.ServerSocket.ClientHandler;
+import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

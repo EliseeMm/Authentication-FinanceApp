@@ -1,4 +1,4 @@
-package Servers;
+package Servers.ServerSocket;
 
 import AccessValidation.ServerCommunication;
 import org.json.JSONObject;
@@ -7,7 +7,7 @@ import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
 
-public class ClientHandler implements Runnable{
+public class ClientHandler implements Runnable,ClientStuff {
     private final Socket socket;
     private  BufferedReader bufferedReader; // used to read text from input stream
     private  BufferedWriter bufferedWriter; // used to write to an output stream
@@ -67,5 +67,10 @@ public class ClientHandler implements Runnable{
 
     public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
+    }
+
+    @Override
+    public String toString(){
+        return accountNumber;
     }
 }

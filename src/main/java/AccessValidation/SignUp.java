@@ -1,7 +1,8 @@
 package AccessValidation;
 
 import AccountCreation.AccNumbers;
-import Servers.ClientHandler;
+import Servers.ServerSocket.ClientHandler;
+import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -13,7 +14,7 @@ import java.sql.SQLException;
 public class SignUp extends ServerCommunication {
     private final String password;
     private final String username;
-    public SignUp(ClientHandler clientHandler, JSONArray arguments) throws SQLException {
+    public SignUp(ClientStuff clientHandler, JSONArray arguments) throws SQLException {
         super(clientHandler);
         this.username = arguments.get(0).toString();
         this.password = arguments.get(1).toString();

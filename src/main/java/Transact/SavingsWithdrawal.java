@@ -1,8 +1,8 @@
 package Transact;
 
 import AccessValidation.ServerCommunication;
-import BalanceView.MiniStatement;
-import Servers.ClientHandler;
+import Servers.ServerSocket.ClientHandler;
+import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class SavingsWithdrawal extends ServerCommunication {
-    public SavingsWithdrawal(ClientHandler clientHandler, JSONArray array) throws SQLException {
+    public SavingsWithdrawal(ClientStuff clientHandler, JSONArray array) throws SQLException {
         super(clientHandler, array);
         this.accountNumber = clientHandler.getAccountNumber();
         this.amount = Integer.parseInt(array.get(0).toString());
