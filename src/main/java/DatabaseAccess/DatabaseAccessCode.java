@@ -31,6 +31,7 @@ public class DatabaseAccessCode {
             PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS acc"+ accNumber +"("+
                     "transactionID  INTEGER PRIMARY KEY AUTOINCREMENT, "+
                     "TransactionDate DATE, " +
+                    "TransactionDateValue DATE, " +
                     "Reference TEXT, " +
                     "Amount INTEGER, " +
                     "Balance INTEGER" +
@@ -44,13 +45,14 @@ public class DatabaseAccessCode {
     public void updateTransactionTracker(String accNumber, LocalDate date, String ref,int amount,int balance){
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO acc"+ accNumber +"("+
-                    "TransactionDate," +
+                    "TransactionDate,TransactionDateValue," +
                     "Reference,Amount,Balance) " +
-                    "VALUES (?,?,?,?)");
-            preparedStatement.setString(1, String.valueOf(date));
-            preparedStatement.setString(2,ref);
-            preparedStatement.setInt(3,amount);
-            preparedStatement.setInt(4,balance);
+                    "VALUES (?,?,?,?,?)");
+            preparedStatement.setString(1,String.valueOf(date));
+            preparedStatement.setDate(2, Date.valueOf(String.valueOf(date)));
+            preparedStatement.setString(3,ref);
+            preparedStatement.setInt(4,amount);
+            preparedStatement.setInt(5,balance);
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException e) {
@@ -208,6 +210,21 @@ public class DatabaseAccessCode {
             ps.setInt(1,amount);
             ps.setString(2,accountNumber);
             ps.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void getAccStatement(LocalDate date,String accountNumber){
+        try{
+            PreparedStatement ps = connection.prepareStatement("Select * from acc"+accountNumber+" ac WHERE ac.TransactionDateValue < ? ");
+            ps.setDate(1, Date.valueOf(date));
+            ps.execute();
+            ResultSet rs = ps.getResultSet();
+            while (rs.next()) {
+                String dates = rs.getString("TransactionDate");
+                System.out.println(dates);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -1,5 +1,6 @@
 package AccessValidation;
 
+import BalanceView.FullStatement;
 import BalanceView.MiniStatement;
 import DatabaseAccess.DatabaseAccessCode;
 import ErrorHandling.InvalidCommand;
@@ -61,6 +62,9 @@ public abstract class ServerCommunication implements ServerResponses {
                 }
                 case "mini statement" -> {
                     return new MiniStatement(clientStuff);
+                }
+                case "full statement" -> {
+                    return new FullStatement(clientStuff,arguments);
                 }
                 default -> {
                     return new InvalidCommand(clientStuff);

@@ -1,5 +1,6 @@
 package ClientSide.JSONRequestBuilders;
 
+import BalanceView.FullStatement;
 import org.json.JSONObject;
 
 import java.util.Scanner;
@@ -28,6 +29,9 @@ public class RequestJsonCreation {
             }
             case "mini statement"-> {
                 requestsArguments = new MiniStatementRequest().getRequest();
+            }
+            case "full statement"-> {
+                requestsArguments = new FullStatementRequest().getRequest();
             }
         }
         request.put("Request",command);
