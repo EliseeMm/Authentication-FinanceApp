@@ -27,16 +27,24 @@ public class Login extends ServerCommunication {
     @Override
     public void execute() {
         String result;
+        String message;
         response = new JSONObject();
         String hashSaved = dao.getHashPassword(username);
         try {
             if (pbkdf2c.doHashPasswordsMatch(hashSaved, password)) {
-                result = "Login Successful";
+                result = "OK";
                 clientHandler.setAccountNumber(dao.getAccountNumber(username));
+                clientHandler.setUsername(username);
+                message = "Login Successful,Welcome "+clientHandler.getUsername();
+                LoggedInUsers.addUser(clientHandler);
+                System.out.println(LoggedInUsers.getUsers());
             } else {
-                result = "Login failed";
+                result = "ERROR";
+                message = "Login failed";
+
             }
-            response.put("message", result);
+            response.put("result",result);
+            response.put("message", message);
             response.put("Balance",dao.getCurrentBalanceAccNum(clientHandler.getAccountNumber()));
             dao.closeConnection();
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | SQLException e) {

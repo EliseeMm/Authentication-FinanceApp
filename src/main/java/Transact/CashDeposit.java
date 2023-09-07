@@ -24,15 +24,16 @@ public class CashDeposit extends ServerCommunication {
 
     @Override
     public void execute() {
-
-        String result;
         try {
             response = new JSONObject();
             currentBalance += amount;
             dao.updateBalance(currentBalance, accountNumber);
             dao.updateTransactionTracker(accountNumber, LocalDate.now(), "Cash Deposit", amount, currentBalance);
-            result = "Successful Deposit";
-            response.put("message",result);
+            result = "OK";
+            message = "Successful Deposit";
+
+            response.put("result",result);
+            response.put("message",message);
             response.put("Balance",currentBalance);
             dao.closeConnection();
         } catch (SQLException e) {

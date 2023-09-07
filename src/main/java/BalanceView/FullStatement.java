@@ -5,6 +5,7 @@ import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
@@ -19,26 +20,37 @@ public class FullStatement extends ServerCommunication {
 
     @Override
     public JSONObject getResponse() {
-        return null;
+        return response;
     }
 
     @Override
     public void execute() {
         response = new JSONObject();
-        JSONObject accountInfo = new JSONObject();
+
 
         LocalDate date = LocalDate.now();
         LocalDate futureDate = LocalDate.now().plusDays(days);
-//        try {
-//            accountInfo.put("Account Number", accountNumber);
-//            accountInfo.put("Current Balance", currentBalance);
-//            accountInfo.put("Savings Balance", dao.getSavingsBalanceAccNum(accountNumber));
-//            response.put("message", "OK");
-//            response.put("Account Information", accountInfo);
-//            dao.closeConnection();
-//        }catch (SQLException e){
-//            throw new RuntimeException(e);
-//        }
-        dao.getAccStatement(futureDate,accountNumber);
+        ResultSet rs =  dao.getAccStatement(futureDate,accountNumber);
+        try {
+            while (rs.next()) {
+                JSONObject data = new JSONObject();
+                int transactionID = rs.getInt("transactionID");
+                String transactionDate = rs.getString("TransactionDate");
+                String reference = rs.getString("Reference");
+                int amount = rs.getInt("Amount");
+                int balance = rs.getInt("Balance");
+
+                data.put("Date",transactionDate);
+                data.put("Reference", reference);
+                data.put("Amount",amount);
+                data.put("Balance",balance);
+
+                response.put("result","OK");
+                response.put(String.valueOf(transactionID),data);
+                System.out.println(date);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -28,7 +28,7 @@ public class MiniStatement extends ServerCommunication {
             accountInfo.put("Account Number", accountNumber);
             accountInfo.put("Current Balance", currentBalance);
             accountInfo.put("Savings Balance", dao.getSavingsBalanceAccNum(accountNumber));
-            response.put("message", "OK");
+            response.put("result", "OK");
             response.put("Account Information", accountInfo);
             dao.closeConnection();
         }catch (SQLException e){

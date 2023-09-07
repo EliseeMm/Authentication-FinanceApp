@@ -24,6 +24,8 @@ public abstract class ServerCommunication implements ServerResponses {
     public String reference;
     public JSONArray array;
     public JSONObject response;
+    public String result;
+    public String message;
     public ServerCommunication(ClientStuff clientStuff) throws SQLException {
         this.clientHandler = clientStuff;
     }
@@ -35,43 +37,54 @@ public abstract class ServerCommunication implements ServerResponses {
     }
 
     public static ServerCommunication createRequest(ClientStuff clientStuff, JSONObject jsonRequest) throws SQLException {
+
         if(!jsonRequest.isEmpty()) {
             String request = jsonRequest.getString("Request");
             JSONArray arguments = jsonRequest.getJSONArray("Arguments");
-            switch (request) {
-                case "login" -> {
-                    return new Login(clientStuff, arguments);
-                }
-                case "signup" -> {
-                    return new SignUp(clientStuff, arguments);
-                }
-                case "payment" -> {
-                    return new SendMoney(clientStuff, arguments);
-                }
-                case "savings deposit" ->{
-                    return new SavingsDeposit(clientStuff,arguments);
-                }
-                case "savings withdrawal" ->{
-                    return new SavingsWithdrawal(clientStuff,arguments);
-                }
-                case "cash withdrawal" -> {
-                    return new CashWithdrawal(clientStuff,arguments);
-                }
-                case "cash deposit" ->{
-                    return new CashDeposit(clientStuff,arguments);
-                }
-                case "mini statement" -> {
-                    return new MiniStatement(clientStuff);
-                }
-                case "full statement" -> {
-                    return new FullStatement(clientStuff,arguments);
-                }
-                default -> {
-                    return new InvalidCommand(clientStuff);
-                }
+            if (request.equals("login") && !LoggedInUsers.isUserLoggedIn(clientStuff)) {
+                return new Login(clientStuff, arguments);
+            } else if (request.equals("signup") && !LoggedInUsers.isUserLoggedIn(clientStuff)) {
+                return new SignUp(clientStuff, arguments);
+            } else if (LoggedInUsers.isUserLoggedIn(clientStuff)) {
+                return returnTransaction(request,clientStuff,arguments);
+            }
+            else {
+                return new ErrorNotLoggedIn(clientStuff);
             }
         }
         return new InvalidCommand(clientStuff);
+    }
+
+    private static ServerCommunication returnTransaction(String request,ClientStuff clientStuff,JSONArray arguments) throws SQLException {
+        switch (request) {
+            case "payment" -> {
+                return new SendMoney(clientStuff, arguments);
+            }
+            case "savings deposit" -> {
+                return new SavingsDeposit(clientStuff, arguments);
+            }
+            case "savings withdrawal" -> {
+                return new SavingsWithdrawal(clientStuff, arguments);
+            }
+            case "cash withdrawal" -> {
+                return new CashWithdrawal(clientStuff, arguments);
+            }
+            case "cash deposit" -> {
+                return new CashDeposit(clientStuff, arguments);
+            }
+            case "mini statement" -> {
+                return new MiniStatement(clientStuff);
+            }
+            case "full statement" -> {
+                return new FullStatement(clientStuff, arguments);
+            }
+            case "sign out" -> {
+                return new SignOut(clientStuff);
+            }
+            default -> {
+                return new InvalidCommand(clientStuff);
+            }
+        }
     }
 
     public boolean isTransactionPossible(int currentBalance) {

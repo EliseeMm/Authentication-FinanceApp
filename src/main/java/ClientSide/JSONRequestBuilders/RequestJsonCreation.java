@@ -33,6 +33,10 @@ public class RequestJsonCreation {
             case "full statement"-> {
                 requestsArguments = new FullStatementRequest().getRequest();
             }
+            case "sign out"-> {
+                requestsArguments = new SignOutRequest().getRequest();
+            }
+
         }
         request.put("Request",command);
         request.put("Arguments",requestsArguments.get("arguments"));

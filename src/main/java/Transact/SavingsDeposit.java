@@ -25,20 +25,23 @@ public class SavingsDeposit extends ServerCommunication {
     @Override
     public void execute() {
         response = new JSONObject();
-        String result;
+
         try {
             if (isTransactionPossible(currentBalance)) {
                 currentBalance -= amount;
                 int CurrentSavings = dao.getSavingsBalanceAccNum(accountNumber);
                 dao.updateSavings(CurrentSavings + amount, accountNumber);
                 dao.updateBalance(currentBalance, accountNumber);
-                dao.updateTransactionTracker(accountNumber, LocalDate.now(),"Savings Deposit",amount,currentBalance);
-                result = "Deposit Successful";
+                dao.updateTransactionTracker(accountNumber, LocalDate.now(),"Savings Deposit",-amount,currentBalance);
+                result = "OK";
+                message = "Deposit Successful";
             }
             else{
-                result = "Deposit Failed";
+                result = "ERROR";
+                message = "Deposit Failed";
             }
-            response.put("message", result);
+            response.put("result",result);
+            response.put("message", message);
             response.put("Balance",currentBalance);
             dao.closeConnection();
         } catch (SQLException e) {

@@ -28,7 +28,6 @@ public class SendMoney extends ServerCommunication{
     @Override
     public void execute() {
         response = new JSONObject();
-        String result;
         try {
             if (isTransactionPossible(currentBalance) && validAccount()) {
                 currentBalance -= amount;
@@ -46,13 +45,17 @@ public class SendMoney extends ServerCommunication{
                 // recipient statement
                 updateAccounts(recipientAccNum, amount);
 
-                result = "Payment Successful";
+                result = "OK";
+                message = "Payment Successful";
             } else if (!validAccount()) {
-                result = "Invalid Account Number";
+                result = "ERROR";
+                message = "Invalid Account Number";
             } else {
-                result = "Insufficient funds";
+                result = "ERROR";
+                message = "Insufficient funds";
             }
-            response.put("message", result);
+            response.put("result",result);
+            response.put("message", message);
             response.put("Balance",currentBalance);
             dao.closeConnection();
         } catch (SQLException e) {

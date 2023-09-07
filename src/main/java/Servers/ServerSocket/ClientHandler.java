@@ -1,6 +1,7 @@
 package Servers.ServerSocket;
 
 import AccessValidation.ServerCommunication;
+import AccessValidation.SignOut;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -12,6 +13,7 @@ public class ClientHandler implements Runnable,ClientStuff {
     private  BufferedReader bufferedReader; // used to read text from input stream
     private  BufferedWriter bufferedWriter; // used to write to an output stream
     private  String accountNumber;
+    private String username;
     public ClientHandler(Socket socket){
         this.socket = socket; // One endpoint of a 2 way communication
         try {
@@ -25,7 +27,12 @@ public class ClientHandler implements Runnable,ClientStuff {
     public void run() {
         String clientRequest;
         try {
-            bufferedWriter.write("Welcome");
+            JSONObject accountAccess = new JSONObject();
+            accountAccess.put("Login","To login into your account");
+            accountAccess.put("Signup","To create an account");
+
+
+            bufferedWriter.write(accountAccess.toString());
             bufferedWriter.newLine();
             bufferedWriter.flush();
             while (socket.isConnected()) {
@@ -35,9 +42,16 @@ public class ClientHandler implements Runnable,ClientStuff {
                     JSONObject request = new JSONObject(clientRequest);
                     ServerCommunication communication = ServerCommunication.createRequest(this, request);
                     communication.execute();
+
                     bufferedWriter.write(communication.getResponse().toString());
                     bufferedWriter.newLine();
                     bufferedWriter.flush();
+
+                    if(communication instanceof SignOut){
+                        closeEverything(socket,bufferedWriter,bufferedReader);
+                        Thread thread = Thread.currentThread();
+                        thread.interrupt();
+                    }
 
                 } else {
                     closeEverything(socket, bufferedWriter, bufferedReader);
@@ -70,7 +84,17 @@ public class ClientHandler implements Runnable,ClientStuff {
     }
 
     @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @Override
     public String toString(){
-        return accountNumber;
+        return username +" : "+accountNumber;
     }
 }

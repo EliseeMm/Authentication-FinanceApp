@@ -1,5 +1,7 @@
 package DatabaseAccess;
 
+import org.json.JSONObject;
+
 import java.sql.*;
 import java.time.LocalDate;
 
@@ -215,16 +217,12 @@ public class DatabaseAccessCode {
         }
     }
 
-    public void getAccStatement(LocalDate date,String accountNumber){
+    public ResultSet getAccStatement(LocalDate date,String accountNumber){
         try{
-            PreparedStatement ps = connection.prepareStatement("Select * from acc"+accountNumber+" ac WHERE ac.TransactionDateValue < ? ");
+            PreparedStatement ps = connection.prepareStatement("Select transactionID,TransactionDate,Reference,Amount,Balance from acc"+accountNumber+" ac WHERE ac.TransactionDateValue < ? ");
             ps.setDate(1, Date.valueOf(date));
             ps.execute();
-            ResultSet rs = ps.getResultSet();
-            while (rs.next()) {
-                String dates = rs.getString("TransactionDate");
-                System.out.println(dates);
-            }
+            return ps.getResultSet();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

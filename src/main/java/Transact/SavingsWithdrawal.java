@@ -24,7 +24,6 @@ public class SavingsWithdrawal extends ServerCommunication {
 
     @Override
     public void execute() {
-        String result;
         response = new JSONObject();
         try {
             int savingsBalance = dao.getSavingsBalanceAccNum(accountNumber);
@@ -33,12 +32,15 @@ public class SavingsWithdrawal extends ServerCommunication {
                 dao.updateSavings(savingsBalance - amount, accountNumber);
                 dao.updateBalance(currentBalance, accountNumber);
                 dao.updateTransactionTracker(accountNumber, LocalDate.now(),"Savings Deposit",amount,currentBalance);
-                result = "Withdrawal Successful";
+                result = "OK";
+                message = "Withdrawal Successful";
             }
             else {
-                result = "Withdrawal failed";
+                result = "ERROR";
+                message = "Withdrawal failed";
             }
-            response.put("message",result);
+            response.put("result",result);
+            response.put("message",message);
             response.put("Balance",currentBalance);
             dao.closeConnection();
         } catch (SQLException e) {
