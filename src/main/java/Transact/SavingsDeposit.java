@@ -1,8 +1,6 @@
 package Transact;
 
 import AccessValidation.ServerCommunication;
-import Servers.ServerSocket.ClientHandler;
-import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,9 +8,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class SavingsDeposit extends ServerCommunication {
-    public SavingsDeposit(ClientStuff clientHandler, JSONArray array) throws SQLException {
-        super(clientHandler, array);
-        this.accountNumber = clientHandler.getAccountNumber();
+    public SavingsDeposit(String accountNumber, JSONArray array) throws SQLException {
+        super(accountNumber, array);
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
         this.amount = Integer.parseInt(array.get(0).toString());
     }
@@ -41,6 +38,7 @@ public class SavingsDeposit extends ServerCommunication {
                 message = "Deposit Failed";
             }
             response.put("result",result);
+            response.put("UUID",uuid);
             response.put("message", message);
             response.put("Balance",currentBalance);
             dao.closeConnection();

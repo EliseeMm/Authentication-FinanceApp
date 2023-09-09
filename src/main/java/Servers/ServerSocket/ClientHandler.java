@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class ClientHandler implements Runnable,ClientStuff {
     private final Socket socket;
@@ -14,6 +15,7 @@ public class ClientHandler implements Runnable,ClientStuff {
     private  BufferedWriter bufferedWriter; // used to write to an output stream
     private  String accountNumber;
     private String username;
+    private UUID uuid = null;
     public ClientHandler(Socket socket){
         this.socket = socket; // One endpoint of a 2 way communication
         try {
@@ -40,18 +42,12 @@ public class ClientHandler implements Runnable,ClientStuff {
                 clientRequest = bufferedReader.readLine();
                 if (clientRequest != null) {
                     JSONObject request = new JSONObject(clientRequest);
-                    ServerCommunication communication = ServerCommunication.createRequest(this, request);
+                    ServerCommunication communication = ServerCommunication.createRequest(request);
                     communication.execute();
 
                     bufferedWriter.write(communication.getResponse().toString());
                     bufferedWriter.newLine();
                     bufferedWriter.flush();
-
-                    if(communication instanceof SignOut){
-                        closeEverything(socket,bufferedWriter,bufferedReader);
-                        Thread thread = Thread.currentThread();
-                        thread.interrupt();
-                    }
 
                 } else {
                     closeEverything(socket, bufferedWriter, bufferedReader);
@@ -94,7 +90,22 @@ public class ClientHandler implements Runnable,ClientStuff {
     }
 
     @Override
+    public void close() {
+        closeEverything(socket,bufferedWriter,bufferedReader);
+    }
+
+    @Override
+    public void setUUID(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    @Override
+    public UUID getUUID() {
+        return this.uuid;
+    }
+
+    @Override
     public String toString(){
-        return username +" : "+accountNumber;
+        return accountNumber;
     }
 }

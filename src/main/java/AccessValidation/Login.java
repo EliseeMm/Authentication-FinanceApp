@@ -8,12 +8,15 @@ import org.json.JSONObject;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
+import java.util.Random;
+import java.util.UUID;
 
 public class Login extends ServerCommunication {
     private final String password;
     private final String username;
-    public Login(ClientStuff clientHandler, JSONArray arguments) throws SQLException {
-        super(clientHandler);
+    private UUID uuid ;
+    public Login(UUID uuid, JSONArray arguments) throws SQLException {
+        super(uuid);
         this.username = arguments.get(0).toString();
         this.password = arguments.get(1).toString();
     }
@@ -33,22 +36,33 @@ public class Login extends ServerCommunication {
         try {
             if (pbkdf2c.doHashPasswordsMatch(hashSaved, password)) {
                 result = "OK";
-                clientHandler.setAccountNumber(dao.getAccountNumber(username));
-                clientHandler.setUsername(username);
-                message = "Login Successful,Welcome "+clientHandler.getUsername();
-                LoggedInUsers.addUser(clientHandler);
+                message = "Login Successful,Welcome "+ username;
+                accountNumber = dao.getAccountNumber(username);
+                uuid = generateUUID();
+                LoggedInUsers.addUser(uuid,accountNumber);
+                System.out.println(uuid);
                 System.out.println(LoggedInUsers.getUsers());
             } else {
                 result = "ERROR";
                 message = "Login failed";
 
             }
+            response.put("UUID",uuid);
             response.put("result",result);
             response.put("message", message);
-            response.put("Balance",dao.getCurrentBalanceAccNum(clientHandler.getAccountNumber()));
+            response.put("Balance",dao.getCurrentBalanceAccNum(accountNumber));
             dao.closeConnection();
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
+    private UUID generateUUID(){
+        do{
+            uuid = new UUID(new Random().nextLong(),new Random().nextLong());
+        }
+        while (LoggedInUsers.getUsers().containsKey(uuid.toString()));
+        return uuid;
+    }
+
 }

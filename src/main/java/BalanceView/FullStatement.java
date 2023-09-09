@@ -1,19 +1,19 @@
 package BalanceView;
 
+import AccessValidation.LoggedInUsers;
 import AccessValidation.ServerCommunication;
-import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class FullStatement extends ServerCommunication {
     private int days;
-    public FullStatement(ClientStuff clientStuff, JSONArray array) throws SQLException {
-        super(clientStuff, array);
-        this.accountNumber = clientHandler.getAccountNumber();
+    public FullStatement(String accountNumber, JSONArray array) throws SQLException {
+        super(accountNumber, array);
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
         this.days = Integer.parseInt(array.get(0).toString());
     }
@@ -30,8 +30,9 @@ public class FullStatement extends ServerCommunication {
 
         LocalDate date = LocalDate.now();
         LocalDate futureDate = LocalDate.now().plusDays(days);
-        ResultSet rs =  dao.getAccStatement(futureDate,accountNumber);
+
         try {
+            ResultSet rs =  dao.getAccStatement(futureDate,accountNumber);
             while (rs.next()) {
                 JSONObject data = new JSONObject();
                 int transactionID = rs.getInt("transactionID");
@@ -49,6 +50,7 @@ public class FullStatement extends ServerCommunication {
                 response.put(String.valueOf(transactionID),data);
                 System.out.println(date);
             }
+            dao.closeConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

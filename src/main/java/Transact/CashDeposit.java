@@ -1,8 +1,6 @@
 package Transact;
 
 import AccessValidation.ServerCommunication;
-import Servers.ServerSocket.ClientHandler;
-import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,10 +8,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class CashDeposit extends ServerCommunication {
-    public CashDeposit(ClientStuff clientHandler, JSONArray array) throws SQLException {
-        super(clientHandler, array);
+    public CashDeposit(String accountNumber, JSONArray array) throws SQLException {
+        super(accountNumber,array);
         this.amount = Integer.parseInt(array.get(0).toString());
-        this.accountNumber = clientHandler.getAccountNumber();
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
     }
 
@@ -34,6 +31,7 @@ public class CashDeposit extends ServerCommunication {
 
             response.put("result",result);
             response.put("message",message);
+            response.put("UUID",uuid);
             response.put("Balance",currentBalance);
             dao.closeConnection();
         } catch (SQLException e) {

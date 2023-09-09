@@ -2,25 +2,36 @@ package AccessValidation;
 
 import Servers.ServerSocket.ClientStuff;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class LoggedInUsers {
 
-    public static ArrayList<ClientStuff> users = new ArrayList<>();
+    public static HashMap<String,String> users = new HashMap<>();
 
-    public static void addUser(ClientStuff clientStuff){
-        users.add(clientStuff);
+    public static void addUser(UUID uuid,String accountNumber){
+        users.put(String.valueOf(uuid),accountNumber);
     }
 
-    public static void removeUser(ClientStuff clientStuff){
-        users.remove(clientStuff);
+    public static void removeUser(UUID uuid){
+        users.remove(uuid.toString());
     }
 
-    public static boolean isUserLoggedIn(ClientStuff clientStuff){
-        return users.contains(clientStuff);
+    public static boolean isUserLoggedIn(UUID uuid){
+        return users.containsKey(uuid.toString());
     }
 
-    public static ArrayList<ClientStuff> getUsers(){
+    public static HashMap<String, String> getUsers(){
         return users;
+    }
+
+    public static String  getAccountNumber(UUID uuid){
+        for(String uuidUsers : users.keySet()){
+            UUID uuidMain = UUID.fromString(uuidUsers);
+            if(uuidMain.equals(uuid)){
+                return users.get(uuidUsers);
+            }
+        }
+        return null;
     }
 }

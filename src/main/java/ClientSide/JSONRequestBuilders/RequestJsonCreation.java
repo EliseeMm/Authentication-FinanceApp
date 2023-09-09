@@ -4,11 +4,12 @@ import BalanceView.FullStatement;
 import org.json.JSONObject;
 
 import java.util.Scanner;
+import java.util.UUID;
 
 public class RequestJsonCreation {
     private final static Scanner scanner = new Scanner(System.in);
 
-    public static JSONObject createRequest(){
+    public static JSONObject createRequest(UUID uuid){
         String command = scanner.nextLine().toLowerCase();
         JSONObject request = new JSONObject();
         String requestString = "";
@@ -39,6 +40,7 @@ public class RequestJsonCreation {
 
         }
         request.put("Request",command);
+        request.put("UUID",uuid);
         request.put("Arguments",requestsArguments.get("arguments"));
         return request;
     }

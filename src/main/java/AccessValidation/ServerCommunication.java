@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 public abstract class ServerCommunication implements ServerResponses {
     public ClientStuff clientHandler;
@@ -26,63 +27,86 @@ public abstract class ServerCommunication implements ServerResponses {
     public JSONObject response;
     public String result;
     public String message;
+    public UUID uuid;
     public ServerCommunication(ClientStuff clientStuff) throws SQLException {
         this.clientHandler = clientStuff;
     }
 
-    public ServerCommunication(ClientStuff clientStuff, JSONArray array) throws SQLException {
-        this.clientHandler = clientStuff;
-        this.array = array;
-
+    public ServerCommunication(UUID uuid) throws SQLException{
+        this.uuid = uuid;
+    }
+    public ServerCommunication(UUID uuid,JSONArray array) throws SQLException{
+        this.uuid = uuid;
     }
 
-    public static ServerCommunication createRequest(ClientStuff clientStuff, JSONObject jsonRequest) throws SQLException {
+//    public ServerCommunication(ClientStuff clientStuff, JSONArray array) throws SQLException {
+//        this.clientHandler = clientStuff;
+//        this.array = array;
+//
+//    }
+
+    public ServerCommunication(String accountNumber,JSONArray array) throws SQLException {
+        this.accountNumber = accountNumber;
+        this.array = array;
+    }
+    public ServerCommunication(String accountNumber) throws SQLException {
+        this.accountNumber = accountNumber;
+    }
+
+    public static ServerCommunication createRequest(JSONObject jsonRequest) throws SQLException {
+
+        System.out.println(jsonRequest);
 
         if(!jsonRequest.isEmpty()) {
             String request = jsonRequest.getString("Request");
             JSONArray arguments = jsonRequest.getJSONArray("Arguments");
-            if (request.equals("login") && !LoggedInUsers.isUserLoggedIn(clientStuff)) {
-                return new Login(clientStuff, arguments);
-            } else if (request.equals("signup") && !LoggedInUsers.isUserLoggedIn(clientStuff)) {
-                return new SignUp(clientStuff, arguments);
-            } else if (LoggedInUsers.isUserLoggedIn(clientStuff)) {
-                return returnTransaction(request,clientStuff,arguments);
+            if (request.equals("login") && !jsonRequest.has("UUID")) {
+                return new Login(null, arguments);
             }
             else {
-                return new ErrorNotLoggedIn(clientStuff);
+                UUID uuid = UUID.fromString(jsonRequest.getString("UUID"));
+                if (request.equals("signup") && !LoggedInUsers.isUserLoggedIn(uuid)) {
+                return new SignUp(uuid, arguments);
+            } else if (LoggedInUsers.isUserLoggedIn(uuid)) {
+                String accountNumber = LoggedInUsers.getAccountNumber(uuid);
+                return returnTransaction(request, accountNumber, arguments);
+            } else {
+                return new ErrorNotLoggedIn(uuid);
+            }
             }
         }
-        return new InvalidCommand(clientStuff);
+        return null;
     }
 
-    private static ServerCommunication returnTransaction(String request,ClientStuff clientStuff,JSONArray arguments) throws SQLException {
+    private static ServerCommunication returnTransaction(String request,String accountNumber,JSONArray arguments) throws SQLException {
         switch (request) {
             case "payment" -> {
-                return new SendMoney(clientStuff, arguments);
+                return new SendMoney(accountNumber, arguments);
             }
             case "savings deposit" -> {
-                return new SavingsDeposit(clientStuff, arguments);
+                return new SavingsDeposit(accountNumber, arguments);
             }
             case "savings withdrawal" -> {
-                return new SavingsWithdrawal(clientStuff, arguments);
+                return new SavingsWithdrawal(accountNumber, arguments);
             }
             case "cash withdrawal" -> {
-                return new CashWithdrawal(clientStuff, arguments);
+                return new CashWithdrawal(accountNumber, arguments);
             }
             case "cash deposit" -> {
-                return new CashDeposit(clientStuff, arguments);
+                return new CashDeposit(accountNumber, arguments);
             }
             case "mini statement" -> {
-                return new MiniStatement(clientStuff);
+                return new MiniStatement(accountNumber);
             }
             case "full statement" -> {
-                return new FullStatement(clientStuff, arguments);
+                return new FullStatement(accountNumber, arguments);
             }
             case "sign out" -> {
-                return new SignOut(clientStuff);
+                return new SignOut(accountNumber);
             }
             default -> {
-                return new InvalidCommand(clientStuff);
+                return null;
+//                return new InvalidCommand(accountNumber);
             }
         }
     }

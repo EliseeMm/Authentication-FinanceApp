@@ -1,19 +1,18 @@
 package Transact;
 
 import AccessValidation.ServerCommunication;
-import Servers.ServerSocket.ClientHandler;
-import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class SendMoney extends ServerCommunication{
 
-    public SendMoney(ClientStuff clientHandler, JSONArray args) throws SQLException {
-        super(clientHandler,args);
-        this.accountNumber = clientHandler.getAccountNumber();
+    public SendMoney(String accountNumber, JSONArray args) throws SQLException {
+        super(accountNumber,args);
+
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
         this.recipientAccNum = args.get(0).toString();
         this.amount = Integer.parseInt(args.get(1).toString());
@@ -55,6 +54,7 @@ public class SendMoney extends ServerCommunication{
                 message = "Insufficient funds";
             }
             response.put("result",result);
+            response.put("UUID",uuid);
             response.put("message", message);
             response.put("Balance",currentBalance);
             dao.closeConnection();

@@ -1,16 +1,15 @@
 package BalanceView;
 
+import AccessValidation.LoggedInUsers;
 import AccessValidation.ServerCommunication;
-import Servers.ServerSocket.ClientHandler;
-import Servers.ServerSocket.ClientStuff;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class MiniStatement extends ServerCommunication {
-    public MiniStatement(ClientStuff clientHandler) throws SQLException {
-        super(clientHandler);
-        this.accountNumber = clientHandler.getAccountNumber();
+    public MiniStatement(String accountNumber) throws SQLException {
+        super(accountNumber);
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
     }
 
@@ -29,6 +28,7 @@ public class MiniStatement extends ServerCommunication {
             accountInfo.put("Current Balance", currentBalance);
             accountInfo.put("Savings Balance", dao.getSavingsBalanceAccNum(accountNumber));
             response.put("result", "OK");
+            response.put("UUID",uuid);
             response.put("Account Information", accountInfo);
             dao.closeConnection();
         }catch (SQLException e){

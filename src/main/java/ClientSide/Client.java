@@ -6,12 +6,14 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class Client {
     private final BufferedReader bufferedReader;
     private final BufferedWriter bufferedWriter;
     private final Socket socket;
     private final Scanner scanner = new Scanner(System.in);
+    private UUID uuid = null;
 
     public Client(Socket socket){
         try {
@@ -29,12 +31,23 @@ public class Client {
 
             if(message != null) {
                 JSONObject js = new JSONObject(message);
+                if(js.has("UUID")) {
+                    System.out.println("here");
+                    uuid = UUID.fromString(js.getString("UUID"));
+                    System.out.println(uuid);
+                }
                 System.out.println(js.toString(4));
-                JSONObject command = RequestJsonCreation.createRequest();
+                System.out.println(uuid);
+                JSONObject command = RequestJsonCreation.createRequest(uuid);
+
+
+
 
                 bufferedWriter.write(command.toString());
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
+
+
             }
             else {
                 closeEverything(socket,bufferedWriter,bufferedReader);

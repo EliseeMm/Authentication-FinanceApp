@@ -1,13 +1,13 @@
 package AccessValidation;
 
-import Servers.ServerSocket.ClientStuff;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class SignOut extends ServerCommunication{
-    public SignOut(ClientStuff clientStuff) throws SQLException {
-        super(clientStuff);
+    public SignOut(String accountNumber) throws SQLException {
+        super(accountNumber);
     }
 
     @Override
@@ -17,10 +17,15 @@ public class SignOut extends ServerCommunication{
 
     @Override
     public void execute() {
-        LoggedInUsers.removeUser(clientHandler);
+        for(String uuid : LoggedInUsers.getUsers().keySet()){
+            if(LoggedInUsers.getUsers().get(uuid).equals(accountNumber)){
+                LoggedInUsers.removeUser(UUID.fromString(uuid));
+            }
+        }
+
         response = new JSONObject();
         response.put("result","OK");
-        response.put("message",clientHandler.getUsername() + " Successfully logged out");
+        response.put("message", "Successfully logged out");
         System.out.println(LoggedInUsers.getUsers());
     }
 }

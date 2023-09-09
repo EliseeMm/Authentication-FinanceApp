@@ -1,20 +1,19 @@
 package AccessValidation;
 
 import AccountCreation.AccNumbers;
-import Servers.ServerSocket.ClientHandler;
-import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
+import java.util.UUID;
 
 
 public class SignUp extends ServerCommunication {
     private final String password;
     private final String username;
-    public SignUp(ClientStuff clientHandler, JSONArray arguments) throws SQLException {
+    public SignUp(UUID clientHandler, JSONArray arguments) throws SQLException {
         super(clientHandler);
         this.username = arguments.get(0).toString();
         this.password = arguments.get(1).toString();

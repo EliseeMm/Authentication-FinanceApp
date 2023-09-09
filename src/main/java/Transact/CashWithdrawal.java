@@ -1,8 +1,6 @@
 package Transact;
 
 import AccessValidation.ServerCommunication;
-import Servers.ServerSocket.ClientHandler;
-import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,9 +9,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class CashWithdrawal extends ServerCommunication {
-    public CashWithdrawal(ClientStuff clientHandler, JSONArray array) throws SQLException {
-        super(clientHandler, array);
-        this.accountNumber = clientHandler.getAccountNumber();
+    public CashWithdrawal(String accountNumber, JSONArray array) throws SQLException {
+        super(accountNumber, array);
         this.amount = Integer.parseInt(array.get(0).toString());
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
     }
@@ -41,6 +38,7 @@ public class CashWithdrawal extends ServerCommunication {
                 message = "Withdrawal Failed,Insufficient funds";
             }
             response.put("result",result);
+            response.put("UUID",uuid);
             response.put("message",message);
             response.put("Balance",currentBalance);
             dao.closeConnection();

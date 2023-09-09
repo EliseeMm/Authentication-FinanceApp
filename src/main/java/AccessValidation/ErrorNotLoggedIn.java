@@ -1,12 +1,12 @@
 package AccessValidation;
 
-import Servers.ServerSocket.ClientStuff;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class ErrorNotLoggedIn extends ServerCommunication {
-    public ErrorNotLoggedIn(ClientStuff clientStuff) throws SQLException {
+    public ErrorNotLoggedIn(UUID clientStuff) throws SQLException {
         super(clientStuff);
     }
 

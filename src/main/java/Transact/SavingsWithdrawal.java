@@ -1,8 +1,6 @@
 package Transact;
 
 import AccessValidation.ServerCommunication;
-import Servers.ServerSocket.ClientHandler;
-import Servers.ServerSocket.ClientStuff;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,9 +8,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class SavingsWithdrawal extends ServerCommunication {
-    public SavingsWithdrawal(ClientStuff clientHandler, JSONArray array) throws SQLException {
-        super(clientHandler, array);
-        this.accountNumber = clientHandler.getAccountNumber();
+    public SavingsWithdrawal(String accountNumber, JSONArray array) throws SQLException {
+        super(accountNumber, array);
         this.amount = Integer.parseInt(array.get(0).toString());
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
     }
@@ -40,6 +37,7 @@ public class SavingsWithdrawal extends ServerCommunication {
                 message = "Withdrawal failed";
             }
             response.put("result",result);
+            response.put("UUID",uuid);
             response.put("message",message);
             response.put("Balance",currentBalance);
             dao.closeConnection();
