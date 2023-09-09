@@ -36,6 +36,7 @@ public class RequestJsonCreation {
             }
             case "sign out"-> {
                 requestsArguments = new SignOutRequest().getRequest();
+
             }
 
         }

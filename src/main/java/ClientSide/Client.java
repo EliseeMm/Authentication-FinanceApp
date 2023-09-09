@@ -40,6 +40,10 @@ public class Client {
                 System.out.println(uuid);
                 JSONObject command = RequestJsonCreation.createRequest(uuid);
 
+                if(command.getString("Request").equals("sign out")){
+                    uuid = null;
+                }
+
 
 
 

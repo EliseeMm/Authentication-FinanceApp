@@ -62,17 +62,16 @@ public abstract class ServerCommunication implements ServerResponses {
             JSONArray arguments = jsonRequest.getJSONArray("Arguments");
             if (request.equals("login") && !jsonRequest.has("UUID")) {
                 return new Login(null, arguments);
-            }
-            else {
-                UUID uuid = UUID.fromString(jsonRequest.getString("UUID"));
-                if (request.equals("signup") && !LoggedInUsers.isUserLoggedIn(uuid)) {
-                return new SignUp(uuid, arguments);
-            } else if (LoggedInUsers.isUserLoggedIn(uuid)) {
-                String accountNumber = LoggedInUsers.getAccountNumber(uuid);
-                return returnTransaction(request, accountNumber, arguments);
+            } else if (request.equals("signup") && !jsonRequest.has("UUID")) {
+                return new SignUp(null, arguments);
             } else {
-                return new ErrorNotLoggedIn(uuid);
-            }
+                UUID uuid = UUID.fromString(jsonRequest.getString("UUID"));
+                if (LoggedInUsers.isUserLoggedIn(uuid)) {
+                    String accountNumber = LoggedInUsers.getAccountNumber(uuid);
+                    return returnTransaction(request, accountNumber, arguments);
+                } else {
+                    return new ErrorNotLoggedIn(uuid);
+                }
             }
         }
         return null;
