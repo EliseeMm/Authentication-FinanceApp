@@ -26,6 +26,5 @@ public class SignOut extends ServerCommunication{
         response = new JSONObject();
         response.put("result","OK");
         response.put("message", "Successfully logged out");
-        System.out.println(LoggedInUsers.getUsers());
     }
 }

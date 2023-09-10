@@ -40,8 +40,6 @@ public class Login extends ServerCommunication {
                 accountNumber = dao.getAccountNumber(username);
                 uuid = generateUUID();
                 LoggedInUsers.addUser(uuid,accountNumber);
-                System.out.println(uuid);
-                System.out.println(LoggedInUsers.getUsers());
             } else {
                 result = "ERROR";
                 message = "Login failed";

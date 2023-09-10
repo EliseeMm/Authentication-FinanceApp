@@ -32,12 +32,10 @@ public class Client {
             if(message != null) {
                 JSONObject js = new JSONObject(message);
                 if(js.has("UUID")) {
-                    System.out.println("here");
                     uuid = UUID.fromString(js.getString("UUID"));
-                    System.out.println(uuid);
                 }
                 System.out.println(js.toString(4));
-                System.out.println(uuid);
+
                 JSONObject command = RequestJsonCreation.createRequest(uuid);
 
                 if(command.getString("Request").equals("sign out")){

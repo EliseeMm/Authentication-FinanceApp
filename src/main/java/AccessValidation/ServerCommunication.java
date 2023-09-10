@@ -55,8 +55,6 @@ public abstract class ServerCommunication implements ServerResponses {
 
     public static ServerCommunication createRequest(JSONObject jsonRequest) throws SQLException {
 
-        System.out.println(jsonRequest);
-
         if(!jsonRequest.isEmpty()) {
             String request = jsonRequest.getString("Request");
             JSONArray arguments = jsonRequest.getJSONArray("Arguments");
