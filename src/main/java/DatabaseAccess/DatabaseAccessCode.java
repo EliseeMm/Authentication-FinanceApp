@@ -21,6 +21,7 @@ public class DatabaseAccessCode {
             PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS accountHolders(" +
                     "accountHolderID INTEGER PRIMARY KEY AUTOINCREMENT, "+
                     "username VARCHAR(10) NOT NULL, " +
+                    "activeAccount BOOLEAN DEFAULT TRUE, "+
                     "hashPass TEXT NOT NULL" +
                     ")");
             preparedStatement.execute();
@@ -219,7 +220,8 @@ public class DatabaseAccessCode {
 
     public ResultSet getAccStatement(LocalDate date,String accountNumber){
         try{
-            PreparedStatement ps = connection.prepareStatement("Select transactionID,TransactionDate,Reference,Amount,Balance from acc"+accountNumber+" ac WHERE ac.TransactionDateValue < ? ");
+            PreparedStatement ps = connection.prepareStatement("Select transactionID,TransactionDate,Reference,Amount," +
+                    "Balance from acc"+accountNumber+" ac WHERE ac.TransactionDateValue < ? ");
             ps.setDate(1, Date.valueOf(date));
             ps.execute();
             return ps.getResultSet();
@@ -227,6 +229,75 @@ public class DatabaseAccessCode {
             throw new RuntimeException(e);
         }
     }
+
+    public ResultSet getAccountHolders(){
+        try {
+            PreparedStatement ps = connection.prepareStatement("Select accountHolders.accountHolderID,accountHolders." +
+                    "username,accountNumbers.accountNumber ,accountNumbers.balance,accountNumbers.savingsBalance " +
+                    "FROM accountHolders " +
+                    "INNER JOIN accountNumbers ON  accountHolders.accountHolderID = accountNumbers.accountHolderID ");
+            ps.execute();
+            return ps.getResultSet();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String isAccountActive(String username){
+        try{
+            PreparedStatement ps = connection.prepareStatement("Select username FROM accountHolders WHERE activeAccount = TRUE AND username =?");
+            ps.setString(1,username);
+            ps.execute();
+            ResultSet rs = ps.getResultSet();
+            System.out.println(rs.getString("username"));
+            return rs.getString("username");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void blockOrUnblock(boolean blockOrUnblock,String username){
+        try{
+            PreparedStatement ps = connection.prepareStatement("UPDATE  accountHolders SET activeAccount = ? WHERE username = ?");
+            ps.setBoolean(1,blockOrUnblock);
+            ps.setString(2,username);
+            ps.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public int getTotalUsersAmount(){
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT SUM(balance) FROM accountNumbers");
+            ps.execute();
+            ResultSet rs = ps.getResultSet();
+            return rs.getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int getAverage(){
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT AVG(balance) FROM accountNumbers");
+            ps.execute();
+            ResultSet rs = ps.getResultSet();
+            return rs.getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ResultSet aboveOrBelowAverage(String aboveOrBelow,int avg){
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT accountNumber,balance FROM accountNumbers WHERE balance "+aboveOrBelow+"?");
+            ps.setInt(1,avg);
+            ps.execute();
+            return ps.getResultSet();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
     public void closeConnection() throws SQLException {

@@ -1,19 +1,24 @@
 package Servers.ServerSocket;
 
 import Servers.ServerSocket.ClientHandler;
+import Servers.ServerSocket.ServerCommands.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
+import java.util.Scanner;
 
 public class MainServer implements Runnable {
     private final ServerSocket serverSocket;
+    private Scanner scanner;
 
     public MainServer (ServerSocket serverSocket){
         this.serverSocket = serverSocket;
     }
     @Override
     public void run() {
+        serverAdminCommands(serverSocket);
         try{
             System.out.println("Server up and running");
             while (!serverSocket.isClosed()){
@@ -28,4 +33,28 @@ public class MainServer implements Runnable {
             throw new RuntimeException(e);
         }
     }
+    private void serverAdminCommands(ServerSocket serverSocket) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                scanner = new Scanner(System.in);
+                while (!serverSocket.isClosed()){
+                    // Read the next line of input from the keyboard
+                    String serverCommand = scanner.nextLine();
+                    ServerCommands command = null;
+                    try {
+                        command = ServerCommands.returnCommand(serverCommand);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println(command.execute().toString(4));
+
+                }
+            }
+
+
+        }).start();
+    }
+
+
 }

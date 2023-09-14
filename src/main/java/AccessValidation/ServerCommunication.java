@@ -111,4 +111,7 @@ public abstract class ServerCommunication implements ServerResponses {
     public boolean isTransactionPossible(int currentBalance) {
         return (currentBalance - this.amount) >= 0;
     }
+    public boolean isAccountActive(String username){
+        return dao.isAccountActive(username) != null;
+    }
 }

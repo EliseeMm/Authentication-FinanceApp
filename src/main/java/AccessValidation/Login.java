@@ -34,7 +34,11 @@ public class Login extends ServerCommunication {
         response = new JSONObject();
         String hashSaved = dao.getHashPassword(username);
         try {
-            if (pbkdf2c.doHashPasswordsMatch(hashSaved, password)) {
+            if (hashSaved == null){
+                result = "ERROR";
+                message = "Login failed";
+            }
+            else if (pbkdf2c.doHashPasswordsMatch(hashSaved, password) && isAccountActive(username)) {
                 result = "OK";
                 message = "Login Successful,Welcome "+ username;
                 accountNumber = dao.getAccountNumber(username);
@@ -42,8 +46,7 @@ public class Login extends ServerCommunication {
                 LoggedInUsers.addUser(uuid,accountNumber);
             } else {
                 result = "ERROR";
-                message = "Login failed";
-
+                message = "Account is no longer active";
             }
             response.put("UUID",uuid);
             response.put("result",result);
