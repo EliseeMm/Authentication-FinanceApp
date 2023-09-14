@@ -289,7 +289,7 @@ public class DatabaseAccessCode {
 
     public ResultSet aboveOrBelowAverage(String aboveOrBelow,int avg){
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT accountNumber,balance FROM accountNumbers WHERE balance "+aboveOrBelow+"?");
+            PreparedStatement ps = connection.prepareStatement("SELECT accountHolderID,accountNumber,balance FROM accountNumbers WHERE balance "+aboveOrBelow+"?");
             ps.setInt(1,avg);
             ps.execute();
             return ps.getResultSet();

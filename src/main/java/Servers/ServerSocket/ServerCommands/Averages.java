@@ -15,30 +15,36 @@ public class Averages extends ServerCommands{
         JSONObject belowAverage = new JSONObject();
         try {
             int average = dao.getAverage();
-            response.put("Average", average);
+            response.put("Average Account Balance", average);
             ResultSet above = dao.aboveOrBelowAverage(">", average);
 
             while (above.next()) {
+                JSONObject user = new JSONObject();
+                int id = above.getInt("accountHolderID");
                 String accountNumber = above.getString("accountNumber");
                 int balance = above.getInt("balance");
-                aboveAverage.put("Account",accountNumber);
-                aboveAverage.put("Balance",balance);
+
+                user.put("Account",accountNumber);
+                user.put("Balance",balance);
+                aboveAverage.put(String.valueOf(id),user);
 
             }
-            response.put("Above average",aboveAverage);
+            response.put("Above Account Balance average",aboveAverage);
 
             ResultSet below = dao.aboveOrBelowAverage("<", average);
 
             while (below.next()) {
-                String ll = above.getString("accountNumber");
-                int a = above.getInt("balance");
-                System.out.println(ll);
-                System.out.println(a);
-                belowAverage.put("Account",ll);
-                belowAverage.put("Balance",a);
+                JSONObject user = new JSONObject();
+                int id = above.getInt("accountHolderID");
+                String accountNumber = below.getString("accountNumber");
+                int balance = below.getInt("balance");
+
+                user.put("Account",accountNumber);
+                user.put("Balance",balance);
+                belowAverage.put(String.valueOf(id),user);
 
             }
-            response.put("Below average",belowAverage);
+            response.put("Below Account Balance average",belowAverage);
             dao.closeConnection();
 
         } catch (SQLException e) {
