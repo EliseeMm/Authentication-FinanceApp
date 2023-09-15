@@ -18,8 +18,8 @@ public class ListAccountHolders extends ServerCommands{
                 int id = rs.getInt("accountHolderID");
                 String username = rs.getString("username");
                 String accountNumber = rs.getString("accountNumber");
-                String accBalance = rs.getString("balance");
-                String savingsBalance = rs.getString("savingsBalance");
+                int accBalance = rs.getInt("balance");
+                int savingsBalance = rs.getInt("savingsBalance");
                 accHolder.put("Username",username);
                 accHolder.put("Account Number",accountNumber);
                 accHolder.put("Account Balance",accBalance);

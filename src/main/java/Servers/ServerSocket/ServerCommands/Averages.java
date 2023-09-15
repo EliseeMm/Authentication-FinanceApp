@@ -35,7 +35,7 @@ public class Averages extends ServerCommands{
 
             while (below.next()) {
                 JSONObject user = new JSONObject();
-                int id = above.getInt("accountHolderID");
+                int id = below.getInt("accountHolderID");
                 String accountNumber = below.getString("accountNumber");
                 int balance = below.getInt("balance");
 
