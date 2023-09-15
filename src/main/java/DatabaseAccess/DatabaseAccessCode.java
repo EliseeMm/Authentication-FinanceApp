@@ -38,6 +38,7 @@ public class DatabaseAccessCode {
                     "TransactionDateValue DATE, " +
                     "Reference TEXT, " +
                     "Amount INTEGER, " +
+                    "Fee INTEGER, "+
                     "Balance INTEGER" +
                     ")");
 
@@ -46,17 +47,18 @@ public class DatabaseAccessCode {
             throw new RuntimeException(e);
         }
     }
-    public void updateTransactionTracker(String accNumber, LocalDate date, String ref,int amount,int balance){
+    public void updateTransactionTracker(String accNumber, LocalDate date, String ref,int amount,int fee,int balance){
         try {
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO acc"+ accNumber +"("+
                     "TransactionDate,TransactionDateValue," +
-                    "Reference,Amount,Balance) " +
-                    "VALUES (?,?,?,?,?)");
+                    "Reference,Amount,Fee,Balance) " +
+                    "VALUES (?,?,?,?,?,?)");
             preparedStatement.setString(1,String.valueOf(date));
             preparedStatement.setDate(2, Date.valueOf(String.valueOf(date)));
             preparedStatement.setString(3,ref);
             preparedStatement.setInt(4,amount);
-            preparedStatement.setInt(5,balance);
+            preparedStatement.setInt(5,fee);
+            preparedStatement.setInt(6,balance);
             preparedStatement.execute();
             preparedStatement.close();
         } catch (SQLException e) {
@@ -259,7 +261,7 @@ public class DatabaseAccessCode {
 
     public ResultSet getAccStatement(LocalDate date,String accountNumber){
         try{
-            PreparedStatement ps = connection.prepareStatement("Select transactionID,TransactionDate,Reference,Amount," +
+            PreparedStatement ps = connection.prepareStatement("Select transactionID,TransactionDate,Reference,Amount,Fee," +
                     "Balance from acc"+accountNumber+" ac WHERE ac.TransactionDateValue < ? ");
             ps.setDate(1, Date.valueOf(date));
             ps.execute();
@@ -321,6 +323,28 @@ public class DatabaseAccessCode {
             ps.execute();
             ResultSet rs = ps.getResultSet();
             return rs.getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int getAccountUserId(String accountNumber){
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT accountHolderID FROM accountNumbers WHERE accountNumber = ?");
+            ps.setString(1,accountNumber);
+            ps.execute();
+            return ps.getResultSet().getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ResultSet getUserDetails(int id){
+        try{
+            PreparedStatement ps = connection.prepareStatement("SELECT name,surname,IDNumber,email,address,phone FROM userDetails WHERE userID=?");
+            ps.setInt(1,id);
+            ps.execute();
+            return ps.getResultSet();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

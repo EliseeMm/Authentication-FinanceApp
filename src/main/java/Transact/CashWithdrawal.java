@@ -9,10 +9,13 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class CashWithdrawal extends ServerCommunication {
+    private int FEE = 3; //R3 for every 100
+
     public CashWithdrawal(String accountNumber, JSONArray array) throws SQLException {
         super(accountNumber, array);
         this.amount = Integer.parseInt(array.get(0).toString());
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
+        transactionFee = (amount/100) * FEE;
     }
 
     @Override
@@ -27,9 +30,9 @@ public class CashWithdrawal extends ServerCommunication {
 
         try{
             if(isTransactionPossible(currentBalance)){
-                currentBalance -= amount;
+                currentBalance -= (amount + transactionFee);
                 dao.updateBalance(currentBalance,accountNumber);
-                dao.updateTransactionTracker(accountNumber, LocalDate.now(),"Cash Withdrawal",-amount,currentBalance);
+                dao.updateTransactionTracker(accountNumber, LocalDate.now(),"Cash Withdrawal",-amount,-transactionFee,currentBalance);
                 result = "OK";
                 message = "Withdrawal Successful";
             }

@@ -29,7 +29,7 @@ public class SavingsDeposit extends ServerCommunication {
                 int CurrentSavings = dao.getSavingsBalanceAccNum(accountNumber);
                 dao.updateSavings(CurrentSavings + amount, accountNumber);
                 dao.updateBalance(currentBalance, accountNumber);
-                dao.updateTransactionTracker(accountNumber, LocalDate.now(),"Savings Deposit",-amount,currentBalance);
+                dao.updateTransactionTracker(accountNumber, LocalDate.now(),"Savings Deposit",-amount,0,currentBalance);
                 result = "OK";
                 message = "Deposit Successful";
             }

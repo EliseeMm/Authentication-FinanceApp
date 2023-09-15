@@ -16,6 +16,7 @@ import java.util.UUID;
 
 public abstract class ServerCommunication implements ServerResponses {
     public ClientStuff clientHandler;
+    public int transactionFee;
     public final DatabaseAccessCode dao = new DatabaseAccessCode("passwords.db");
     public final PBKDF2 pbkdf2c = new PBKDF2();
     public int currentBalance;
@@ -109,7 +110,7 @@ public abstract class ServerCommunication implements ServerResponses {
     }
 
     public boolean isTransactionPossible(int currentBalance) {
-        return (currentBalance - this.amount) >= 0;
+        return (currentBalance - (this.amount+ this.transactionFee) >= 0);
     }
     public boolean isAccountActive(String username){
         return dao.isAccountActive(username) != null;

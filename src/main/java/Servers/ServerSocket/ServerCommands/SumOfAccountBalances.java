@@ -10,8 +10,12 @@ public class SumOfAccountBalances extends ServerCommands{
 
     @Override
     public JSONObject execute() {
-
+        try{
         response.put("Result",dao.getTotalUsersAmount());
+        dao.closeConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return response;
     }
 }

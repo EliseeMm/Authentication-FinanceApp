@@ -16,21 +16,16 @@ public abstract class ServerCommands {
 
     public static  ServerCommands returnCommand(String command) throws SQLException {
         String[] mainCommand = command.split(" ");
-        switch (mainCommand[0]){
-            case "list":
-                return new ListAccountHolders();
-            case "kill":
-                return new CloseServer();
-            case "block":
-                return new BlockUser(mainCommand[1]);
-            case "unblock":
-                return new UnblockUser(mainCommand[1]);
-            case "sum":
-                return new SumOfAccountBalances();
-            case "avg":
-                return new Averages();
-        }
-        return null;
+        return switch (mainCommand[0]) {
+            case "list" -> new ListAccountHolders();
+            case "kill" -> new CloseServer();
+            case "block" -> new BlockUser(mainCommand[1]);
+            case "unblock" -> new UnblockUser(mainCommand[1]);
+            case "sum" -> new SumOfAccountBalances();
+            case "avg" -> new Averages();
+            case "info" -> new RetrieveAccountHolderDetails(mainCommand[1]);
+            default -> null;
+        };
     }
 }
 

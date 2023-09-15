@@ -8,10 +8,13 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class CashDeposit extends ServerCommunication {
+
+    private final int FEE = 2; //R2 for every 100
     public CashDeposit(String accountNumber, JSONArray array) throws SQLException {
         super(accountNumber,array);
         this.amount = Integer.parseInt(array.get(0).toString());
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
+        this.transactionFee = (amount/100) * FEE;
     }
 
     @Override
@@ -23,9 +26,9 @@ public class CashDeposit extends ServerCommunication {
     public void execute() {
         try {
             response = new JSONObject();
-            currentBalance += amount;
+            currentBalance += (amount - transactionFee);
             dao.updateBalance(currentBalance, accountNumber);
-            dao.updateTransactionTracker(accountNumber, LocalDate.now(), "Cash Deposit", amount, currentBalance);
+            dao.updateTransactionTracker(accountNumber, LocalDate.now(), "Cash Deposit", amount,-transactionFee, currentBalance);
             result = "OK";
             message = "Successful Deposit";
 
@@ -37,7 +40,5 @@ public class CashDeposit extends ServerCommunication {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 }

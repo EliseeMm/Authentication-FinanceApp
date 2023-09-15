@@ -39,11 +39,13 @@ public class FullStatement extends ServerCommunication {
                 String transactionDate = rs.getString("TransactionDate");
                 String reference = rs.getString("Reference");
                 int amount = rs.getInt("Amount");
+                int fee = rs.getInt("Fee");
                 int balance = rs.getInt("Balance");
 
                 data.put("Date",transactionDate);
                 data.put("Reference", reference);
                 data.put("Amount",amount);
+                data.put("Fee",fee);
                 data.put("Balance",balance);
 
                 response.put("result","OK");

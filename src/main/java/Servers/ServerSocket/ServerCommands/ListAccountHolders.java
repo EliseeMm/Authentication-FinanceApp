@@ -26,6 +26,7 @@ public class ListAccountHolders extends ServerCommands{
                 accHolder.put("Savings Balance",savingsBalance);
                 response.put(String.valueOf(id),accHolder);
             }
+            dao.closeConnection();
             return response;
 
         } catch (SQLException e) {

@@ -1,5 +1,6 @@
 package Servers.ServerSocket.ServerCommands;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
@@ -11,8 +12,12 @@ public class UnblockUser extends ServerCommands{
     }
     @Override
     public JSONObject execute() {
-        dao.blockOrUnblock(true,username);
-        response.put("message",username +": has been unblocked");
-        return response;
+        try {
+            dao.blockOrUnblock(true, username);
+            response.put("message", username + ": has been unblocked");
+            return response;
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

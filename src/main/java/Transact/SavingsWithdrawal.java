@@ -28,7 +28,7 @@ public class SavingsWithdrawal extends ServerCommunication {
                 currentBalance += amount;
                 dao.updateSavings(savingsBalance - amount, accountNumber);
                 dao.updateBalance(currentBalance, accountNumber);
-                dao.updateTransactionTracker(accountNumber, LocalDate.now(),"Savings Deposit",amount,currentBalance);
+                dao.updateTransactionTracker(accountNumber, LocalDate.now(),"Savings Deposit",amount,0,currentBalance);
                 result = "OK";
                 message = "Withdrawal Successful";
             }

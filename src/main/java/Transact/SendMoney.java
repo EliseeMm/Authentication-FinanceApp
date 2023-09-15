@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class SendMoney extends ServerCommunication{
-
+    private int FEE = 1; //R1 for every 100
     public SendMoney(String accountNumber, JSONArray args) throws SQLException {
         super(accountNumber,args);
 
@@ -17,6 +17,7 @@ public class SendMoney extends ServerCommunication{
         this.recipientAccNum = args.get(0).toString();
         this.amount = Integer.parseInt(args.get(1).toString());
         this.reference = args.get(2).toString();
+        transactionFee = (amount/100) * FEE;
     }
 
     @Override
@@ -29,7 +30,7 @@ public class SendMoney extends ServerCommunication{
         response = new JSONObject();
         try {
             if (isTransactionPossible(currentBalance) && validAccount()) {
-                currentBalance -= amount;
+                currentBalance -= (amount - transactionFee);
 
                 // senders balance
                 updateBalances(currentBalance, accountNumber);
@@ -68,7 +69,7 @@ public class SendMoney extends ServerCommunication{
     }
     private void updateAccounts(String accountNumber,int amount){
         int currentBalance =  getCurrentBalance(accountNumber);
-        dao.updateTransactionTracker(accountNumber, LocalDate.now(),reference,amount,currentBalance);
+        dao.updateTransactionTracker(accountNumber, LocalDate.now(),reference,amount,-transactionFee,currentBalance);
     }
     private void updateBalances(int currentBalance,String accountNumber){
         dao.updateBalance(currentBalance,accountNumber);

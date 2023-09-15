@@ -12,8 +12,13 @@ public class BlockUser extends ServerCommands{
 
     @Override
     public JSONObject execute() {
-        dao.blockOrUnblock(false,username);
-        response.put("message",username +": has been blocked");
-        return response;
+        try {
+            dao.blockOrUnblock(false, username);
+            response.put("message", username + ": has been blocked");
+            dao.closeConnection();
+            return response;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
