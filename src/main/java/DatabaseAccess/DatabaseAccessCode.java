@@ -25,6 +25,7 @@ public class DatabaseAccessCode {
                     "hashPass TEXT NOT NULL" +
                     ")");
             preparedStatement.execute();
+            userDetails();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -75,6 +76,44 @@ public class DatabaseAccessCode {
                     );
             preparedStatement.execute();
             preparedStatement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void userDetails(){
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS userDetails(" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, "+
+                    "name VARCHAR NOT NULL, " +
+                    "surname VARCHAR NOT NULL, " +
+                    "IDNumber VARCHAR NOT NULL, "+
+                    "email VARCHAR, "+
+                    "address VARCHAR, "+
+                    "phone VARCHAR, "+
+                    "userID INTEGER, "+
+                    "FOREIGN KEY (userID) REFERENCES accountHolders (accountHolderID))"
+            );
+            preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void addUserDetails(String name,String surname,String IDNumber,String email,String address,String phone,int id){
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO userDetails(name,surname," +
+                    "IDNumber,email,address,phone,userID) VALUES(?,?,?,?,?,?,?)"
+            );
+            ps.setString(1,name);
+            ps.setString(2,surname);
+            ps.setString(3,IDNumber);
+            ps.setString(4,email);
+            ps.setString(5,address);
+            ps.setString(6,phone);
+            ps.setInt(7,id);
+            ps.execute();
+            ps.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

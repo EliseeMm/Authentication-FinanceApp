@@ -31,7 +31,7 @@ public class ClientHandler implements Runnable,ClientStuff {
         try {
             JSONObject accountAccess = new JSONObject();
             accountAccess.put("Login","To login into your account");
-            accountAccess.put("Signup","To create an account");
+            accountAccess.put("Signup","To create an account.Password: Minimum eight characters, at least one letter and one number");
 
 
             bufferedWriter.write(accountAccess.toString());

@@ -1,8 +1,6 @@
 package ClientSide.JSONRequestBuilders;
 
-import BalanceView.FullStatement;
 import org.json.JSONObject;
-
 import java.util.Scanner;
 import java.util.UUID;
 
