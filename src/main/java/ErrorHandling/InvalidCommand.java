@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public class InvalidCommand extends ServerCommunication {
     private JSONObject response;
+
     public InvalidCommand(UUID uuid) throws SQLException {
         super(uuid);
     }

@@ -4,8 +4,9 @@ import org.json.JSONObject;
 
 import java.sql.SQLException;
 
-public class BlockUser extends ServerCommands{
+public class BlockUser extends ServerCommands {
     private final String username;
+
     protected BlockUser(String username) throws SQLException {
         this.username = username;
     }

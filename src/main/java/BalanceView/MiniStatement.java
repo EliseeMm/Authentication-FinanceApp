@@ -1,11 +1,9 @@
 package BalanceView;
 
-import AccessValidation.LoggedInUsers;
 import AccessValidation.ServerCommunication;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
-import java.util.UUID;
 
 public class MiniStatement extends ServerCommunication {
     public MiniStatement(String accountNumber) throws SQLException {
@@ -28,10 +26,10 @@ public class MiniStatement extends ServerCommunication {
             accountInfo.put("Current Balance", currentBalance);
             accountInfo.put("Savings Balance", dao.getSavingsBalanceAccNum(accountNumber));
             response.put("result", "OK");
-            response.put("UUID",uuid);
+            response.put("UUID", uuid);
             response.put("Account Information", accountInfo);
             dao.closeConnection();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 

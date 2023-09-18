@@ -1,6 +1,5 @@
 package BalanceView;
 
-import AccessValidation.LoggedInUsers;
 import AccessValidation.ServerCommunication;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -8,10 +7,10 @@ import org.json.JSONObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.UUID;
 
 public class FullStatement extends ServerCommunication {
-    private int days;
+    private final int days;
+
     public FullStatement(String accountNumber, JSONArray array) throws SQLException {
         super(accountNumber, array);
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
@@ -32,7 +31,7 @@ public class FullStatement extends ServerCommunication {
         LocalDate futureDate = LocalDate.now().plusDays(days);
 
         try {
-            ResultSet rs =  dao.getAccStatement(futureDate,accountNumber);
+            ResultSet rs = dao.getAccStatement(futureDate, accountNumber);
             while (rs.next()) {
                 JSONObject data = new JSONObject();
                 int transactionID = rs.getInt("transactionID");
@@ -42,14 +41,14 @@ public class FullStatement extends ServerCommunication {
                 int fee = rs.getInt("Fee");
                 int balance = rs.getInt("Balance");
 
-                data.put("Date",transactionDate);
+                data.put("Date", transactionDate);
                 data.put("Reference", reference);
-                data.put("Amount",amount);
-                data.put("Fee",fee);
-                data.put("Balance",balance);
+                data.put("Amount", amount);
+                data.put("Fee", fee);
+                data.put("Balance", balance);
 
-                response.put("result","OK");
-                response.put(String.valueOf(transactionID),data);
+                response.put("result", "OK");
+                response.put(String.valueOf(transactionID), data);
                 System.out.println(date);
             }
             dao.closeConnection();

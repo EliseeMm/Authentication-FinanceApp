@@ -18,7 +18,7 @@ public class ErrorNotLoggedIn extends ServerCommunication {
     @Override
     public void execute() {
         response = new JSONObject();
-        response.put("result","Error");
-        response.put("message","User Not Logged In");
+        response.put("result", "Error");
+        response.put("message", "User Not Logged In");
     }
 }

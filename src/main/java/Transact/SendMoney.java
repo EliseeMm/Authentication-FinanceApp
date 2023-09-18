@@ -6,18 +6,19 @@ import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.UUID;
 
-public class SendMoney extends ServerCommunication{
-    private int FEE = 1; //R1 for every 100
+public class SendMoney extends ServerCommunication {
+
     public SendMoney(String accountNumber, JSONArray args) throws SQLException {
-        super(accountNumber,args);
+        super(accountNumber, args);
 
         this.currentBalance = dao.getCurrentBalanceAccNum(accountNumber);
         this.recipientAccNum = args.get(0).toString();
         this.amount = Integer.parseInt(args.get(1).toString());
         this.reference = args.get(2).toString();
-        transactionFee = (amount/100) * FEE;
+        //R1 for every 100
+        int FEE = 1;
+        transactionFee = (amount / 100) * FEE;
     }
 
     @Override
@@ -54,28 +55,31 @@ public class SendMoney extends ServerCommunication{
                 result = "ERROR";
                 message = "Insufficient funds";
             }
-            response.put("result",result);
-            response.put("UUID",uuid);
+            response.put("result", result);
+            response.put("UUID", uuid);
             response.put("message", message);
-            response.put("Balance",currentBalance);
+            response.put("Balance", currentBalance);
             dao.closeConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
     }
-    private boolean validAccount(){
+
+    private boolean validAccount() {
         return dao.validAccountNumber(recipientAccNum);
     }
-    private void updateAccounts(String accountNumber,int amount){
-        int currentBalance =  getCurrentBalance(accountNumber);
-        dao.updateTransactionTracker(accountNumber, LocalDate.now(),reference,amount,-transactionFee,currentBalance);
-    }
-    private void updateBalances(int currentBalance,String accountNumber){
-        dao.updateBalance(currentBalance,accountNumber);
+
+    private void updateAccounts(String accountNumber, int amount) {
+        int currentBalance = getCurrentBalance(accountNumber);
+        dao.updateTransactionTracker(accountNumber, LocalDate.now(), reference, amount, -transactionFee, currentBalance);
     }
 
-    private int getCurrentBalance(String accountNumber){
+    private void updateBalances(int currentBalance, String accountNumber) {
+        dao.updateBalance(currentBalance, accountNumber);
+    }
+
+    private int getCurrentBalance(String accountNumber) {
         return dao.getCurrentBalanceAccNum(accountNumber);
     }
 }

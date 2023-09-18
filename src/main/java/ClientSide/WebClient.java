@@ -8,8 +8,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.UUID;
 
@@ -31,17 +29,17 @@ public class WebClient {
 //        int status = connection.getResponseCode();
     }
 
-    private StringBuffer readResponse(HttpURLConnection connection) throws IOException{
+    private StringBuffer readResponse(HttpURLConnection connection) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String input;
         StringBuffer content = new StringBuffer();
 
-        while ((input = in.readLine()) != null){
+        while ((input = in.readLine()) != null) {
             content.append(input);
         }
         System.out.println(content);
         JSONObject response = new JSONObject(content.toString());
-        if(response.has("UUID")) {
+        if (response.has("UUID")) {
             System.out.println("here");
             uuid = UUID.fromString(response.getString("UUID"));
             System.out.println(uuid);
@@ -55,7 +53,7 @@ public class WebClient {
 
         WebClient webClient = new WebClient();
         while (true) {
-            HttpURLConnection connection =  (HttpURLConnection) url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             webClient.sendPostRequest(connection);
             webClient.readResponse(connection);
 

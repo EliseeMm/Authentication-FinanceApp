@@ -57,10 +57,9 @@ public class SignUp extends ServerCommunication {
                 LocalDate date = LocalDate.now();
                 int todayYear = date.getYear();
                 int idYear;
-                if(id.startsWith("9")) {
+                if (id.startsWith("9")) {
                     idYear = Integer.parseInt("19" + id.substring(0, 2));
-                }
-                else {
+                } else {
                     idYear = Integer.parseInt("20" + id.substring(0, 2));
                 }
                 System.out.println(idYear);
@@ -73,7 +72,7 @@ public class SignUp extends ServerCommunication {
                         String accNumber = AccNumbers.generateAccountNumber();
                         dao.addAccountNumber(accountHolderID, accNumber);
                         dao.accountTransactionsTracker(accNumber);
-                        dao.addUserDetails(firstname,surname,id,emailAddress,residentialAddress,cellNumber,accountHolderID);
+                        dao.addUserDetails(firstname, surname, id, emailAddress, residentialAddress, cellNumber, accountHolderID);
                         result = "OK";
                         message = "signup successful , welcome to JAVA BANK " + username;
 

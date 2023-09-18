@@ -5,7 +5,6 @@ import BalanceView.MiniStatement;
 import DatabaseAccess.DatabaseAccessCode;
 import ErrorHandling.InvalidCommand;
 import PasswordManagement.PBKDF2;
-import Servers.ServerSocket.ClientHandler;
 import Servers.ServerSocket.ClientStuff;
 import Transact.*;
 import org.json.JSONArray;
@@ -29,34 +28,27 @@ public abstract class ServerCommunication implements ServerResponses {
     public String result;
     public String message;
     public UUID uuid;
+
     public ServerCommunication(ClientStuff clientStuff) throws SQLException {
         this.clientHandler = clientStuff;
     }
 
-    public ServerCommunication(UUID uuid) throws SQLException{
-        this.uuid = uuid;
-    }
-    public ServerCommunication(UUID uuid,JSONArray array) throws SQLException{
+    public ServerCommunication(UUID uuid) throws SQLException {
         this.uuid = uuid;
     }
 
-//    public ServerCommunication(ClientStuff clientStuff, JSONArray array) throws SQLException {
-//        this.clientHandler = clientStuff;
-//        this.array = array;
-//
-//    }
-
-    public ServerCommunication(String accountNumber,JSONArray array) throws SQLException {
+    public ServerCommunication(String accountNumber, JSONArray array) throws SQLException {
         this.accountNumber = accountNumber;
         this.array = array;
     }
+
     public ServerCommunication(String accountNumber) throws SQLException {
         this.accountNumber = accountNumber;
     }
 
     public static ServerCommunication createRequest(JSONObject jsonRequest) throws SQLException {
 
-        if(!jsonRequest.isEmpty()) {
+        if (!jsonRequest.isEmpty()) {
             String request = jsonRequest.getString("Request");
             JSONArray arguments = jsonRequest.getJSONArray("Arguments");
             if (request.equals("login") && !jsonRequest.has("UUID")) {
@@ -67,7 +59,7 @@ public abstract class ServerCommunication implements ServerResponses {
                 UUID uuid = UUID.fromString(jsonRequest.getString("UUID"));
                 if (LoggedInUsers.isUserLoggedIn(uuid)) {
                     String accountNumber = LoggedInUsers.getAccountNumber(uuid);
-                    return returnTransaction(request, accountNumber, arguments);
+                    return returnTransaction(request, accountNumber, arguments,uuid);
                 } else {
                     return new ErrorNotLoggedIn(uuid);
                 }
@@ -76,7 +68,7 @@ public abstract class ServerCommunication implements ServerResponses {
         return null;
     }
 
-    private static ServerCommunication returnTransaction(String request,String accountNumber,JSONArray arguments) throws SQLException {
+    private static ServerCommunication returnTransaction(String request, String accountNumber, JSONArray arguments,UUID uuid) throws SQLException {
         switch (request) {
             case "payment" -> {
                 return new SendMoney(accountNumber, arguments);
@@ -103,16 +95,16 @@ public abstract class ServerCommunication implements ServerResponses {
                 return new SignOut(accountNumber);
             }
             default -> {
-                return null;
-//                return new InvalidCommand(accountNumber);
+                return new InvalidCommand(uuid);
             }
         }
     }
 
     public boolean isTransactionPossible(int currentBalance) {
-        return (currentBalance - (this.amount+ this.transactionFee) >= 0);
+        return (currentBalance - (this.amount + this.transactionFee) >= 0);
     }
-    public boolean isAccountActive(String username){
+
+    public boolean isAccountActive(String username) {
         return dao.isAccountActive(username) != null;
     }
 }

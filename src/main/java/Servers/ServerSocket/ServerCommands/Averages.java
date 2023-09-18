@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Averages extends ServerCommands{
+public class Averages extends ServerCommands {
     protected Averages() throws SQLException {
     }
 
@@ -24,12 +24,12 @@ public class Averages extends ServerCommands{
                 String accountNumber = above.getString("accountNumber");
                 int balance = above.getInt("balance");
 
-                user.put("Account",accountNumber);
-                user.put("Balance",balance);
-                aboveAverage.put(String.valueOf(id),user);
+                user.put("Account", accountNumber);
+                user.put("Balance", balance);
+                aboveAverage.put(String.valueOf(id), user);
 
             }
-            response.put("Above Account Balance average",aboveAverage);
+            response.put("Above Account Balance average", aboveAverage);
 
             ResultSet below = dao.aboveOrBelowAverage("<", average);
 
@@ -39,12 +39,12 @@ public class Averages extends ServerCommands{
                 String accountNumber = below.getString("accountNumber");
                 int balance = below.getInt("balance");
 
-                user.put("Account",accountNumber);
-                user.put("Balance",balance);
-                belowAverage.put(String.valueOf(id),user);
+                user.put("Account", accountNumber);
+                user.put("Balance", balance);
+                belowAverage.put(String.valueOf(id), user);
 
             }
-            response.put("Below Account Balance average",belowAverage);
+            response.put("Below Account Balance average", belowAverage);
             dao.closeConnection();
 
         } catch (SQLException e) {

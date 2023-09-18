@@ -1,6 +1,5 @@
 package ClientSide.JSONRequestBuilders;
 
-import ClientSide.JSONRequestBuilders.Requests;
 import org.json.JSONObject;
 
 import java.util.Scanner;
@@ -9,6 +8,7 @@ public class SignUpRequest implements Requests {
 
     private final JSONObject request = new JSONObject();
     private final Scanner scanner = new Scanner(System.in);
+
     @Override
     public JSONObject getRequest() {
         System.out.println("First name: ");
@@ -41,8 +41,8 @@ public class SignUpRequest implements Requests {
         System.out.println("Enter Cell Number: ");
         String cellNumber = getScanner();
 
-        String[] arguments = {userName,userNameConfirmation,password,passwordConfirmation,idNumber,emailAddress,residentialAddress,cellNumber,firstName,surname};
-        request.put("arguments",arguments);
+        String[] arguments = {userName, userNameConfirmation, password, passwordConfirmation, idNumber, emailAddress, residentialAddress, cellNumber, firstName, surname};
+        request.put("arguments", arguments);
         return request;
     }
 

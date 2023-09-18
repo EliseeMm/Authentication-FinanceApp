@@ -10,7 +10,7 @@ public class AccNumbers {
     public static String generateAccountNumber() {
         StringBuilder num = new StringBuilder();
 
-        while (num.length()< 11) {
+        while (num.length() < 11) {
             int anInt = random.nextInt(9);
             num.append(anInt);
         }

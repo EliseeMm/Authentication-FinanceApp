@@ -14,7 +14,7 @@ public abstract class ServerCommands {
 
     public abstract JSONObject execute();
 
-    public static  ServerCommands returnCommand(String command) throws SQLException {
+    public static ServerCommands returnCommand(String command) throws SQLException {
         String[] mainCommand = command.split(" ");
         return switch (mainCommand[0]) {
             case "list" -> new ListAccountHolders();

@@ -29,18 +29,17 @@ public class SavingsDeposit extends ServerCommunication {
                 int CurrentSavings = dao.getSavingsBalanceAccNum(accountNumber);
                 dao.updateSavings(CurrentSavings + amount, accountNumber);
                 dao.updateBalance(currentBalance, accountNumber);
-                dao.updateTransactionTracker(accountNumber, LocalDate.now(),"Savings Deposit",-amount,0,currentBalance);
+                dao.updateTransactionTracker(accountNumber, LocalDate.now(), "Savings Deposit", -amount, 0, currentBalance);
                 result = "OK";
                 message = "Deposit Successful";
-            }
-            else{
+            } else {
                 result = "ERROR";
                 message = "Deposit Failed";
             }
-            response.put("result",result);
-            response.put("UUID",uuid);
+            response.put("result", result);
+            response.put("UUID", uuid);
             response.put("message", message);
-            response.put("Balance",currentBalance);
+            response.put("Balance", currentBalance);
             dao.closeConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);

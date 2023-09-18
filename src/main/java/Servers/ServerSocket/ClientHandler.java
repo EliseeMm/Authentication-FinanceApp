@@ -1,7 +1,6 @@
 package Servers.ServerSocket;
 
 import AccessValidation.ServerCommunication;
-import AccessValidation.SignOut;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -9,29 +8,31 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class ClientHandler implements Runnable,ClientStuff {
+public class ClientHandler implements Runnable, ClientStuff {
     private final Socket socket;
-    private  BufferedReader bufferedReader; // used to read text from input stream
-    private  BufferedWriter bufferedWriter; // used to write to an output stream
-    private  String accountNumber;
+    private BufferedReader bufferedReader; // used to read text from input stream
+    private BufferedWriter bufferedWriter; // used to write to an output stream
+    private String accountNumber;
     private String username;
     private UUID uuid = null;
-    public ClientHandler(Socket socket){
+
+    public ClientHandler(Socket socket) {
         this.socket = socket; // One endpoint of a 2 way communication
         try {
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream())); // the bufferedReader is reading from the socket input
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())); // bufferedWriter to socket
         } catch (IOException e) {
-            closeEverything(socket,bufferedWriter,bufferedReader);
+            closeEverything(socket, bufferedWriter, bufferedReader);
         }
     }
+
     @Override
     public void run() {
         String clientRequest;
         try {
             JSONObject accountAccess = new JSONObject();
-            accountAccess.put("Login","To login into your account");
-            accountAccess.put("Signup","To create an account.Password: Minimum eight characters, at least one letter and one number");
+            accountAccess.put("Login", "To login into your account");
+            accountAccess.put("Signup", "To create an account.Password: Minimum eight characters, at least one letter and one number");
 
 
             bufferedWriter.write(accountAccess.toString());
@@ -53,15 +54,16 @@ public class ClientHandler implements Runnable,ClientStuff {
                     closeEverything(socket, bufferedWriter, bufferedReader);
                 }
             }
-            }catch (IOException | SQLException e) {
-                System.out.println("Client disconnected");
-                closeEverything(socket, bufferedWriter, bufferedReader);
+        } catch (IOException | SQLException e) {
+            System.out.println("Client disconnected");
+            closeEverything(socket, bufferedWriter, bufferedReader);
         }
     }
 
     /**
-     * Ensures the client side socket is properly closed */
-    public void closeEverything(Socket socket,BufferedWriter bufferedWriter, BufferedReader bufferedReader){
+     * Ensures the client side socket is properly closed
+     */
+    public void closeEverything(Socket socket, BufferedWriter bufferedWriter, BufferedReader bufferedReader) {
         try {
             socket.close();
             bufferedReader.close();
@@ -89,9 +91,8 @@ public class ClientHandler implements Runnable,ClientStuff {
         this.username = username;
     }
 
-    @Override
     public void close() {
-        closeEverything(socket,bufferedWriter,bufferedReader);
+        closeEverything(socket, bufferedWriter, bufferedReader);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class ClientHandler implements Runnable,ClientStuff {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return accountNumber;
     }
 }

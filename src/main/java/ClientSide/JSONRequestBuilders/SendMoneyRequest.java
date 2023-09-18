@@ -8,7 +8,7 @@ public class SendMoneyRequest implements Requests {
     private final JSONObject request = new JSONObject();
     private final Scanner scanner = new Scanner(System.in);
 
-    public JSONObject getRequest(){
+    public JSONObject getRequest() {
         System.out.println("Recipient Account Number");
         String accNum = scanner.nextLine();
 
@@ -18,8 +18,8 @@ public class SendMoneyRequest implements Requests {
         System.out.println("Enter ref: ");
         String reference = scanner.nextLine();
 
-        String[] arguments = {accNum,amount,reference};
-        request.put("arguments",arguments);
+        String[] arguments = {accNum, amount, reference};
+        request.put("arguments", arguments);
 
         return request;
     }

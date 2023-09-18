@@ -5,17 +5,15 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.UUID;
 
 public class Client {
     private final BufferedReader bufferedReader;
     private final BufferedWriter bufferedWriter;
     private final Socket socket;
-    private final Scanner scanner = new Scanner(System.in);
     private UUID uuid = null;
 
-    public Client(Socket socket){
+    public Client(Socket socket) {
         try {
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -25,24 +23,22 @@ public class Client {
         }
     }
 
-    public void readMessage(){
+    public void readMessage() {
         try {
             String message = bufferedReader.readLine();
 
-            if(message != null) {
+            if (message != null) {
                 JSONObject js = new JSONObject(message);
-                if(js.has("UUID")) {
+                if (js.has("UUID")) {
                     uuid = UUID.fromString(js.getString("UUID"));
                 }
                 System.out.println(js.toString(4));
 
                 JSONObject command = RequestJsonCreation.createRequest(uuid);
 
-                if(command.getString("Request").equals("sign out")){
+                if (command.getString("Request").equals("sign out")) {
                     uuid = null;
                 }
-
-
 
 
                 bufferedWriter.write(command.toString());
@@ -50,9 +46,8 @@ public class Client {
                 bufferedWriter.flush();
 
 
-            }
-            else {
-                closeEverything(socket,bufferedWriter,bufferedReader);
+            } else {
+                closeEverything(socket, bufferedWriter, bufferedReader);
             }
 
         } catch (IOException e) {
@@ -60,7 +55,8 @@ public class Client {
             System.exit(0);
         }
     }
-    public void closeEverything(Socket socket,BufferedWriter bufferedWriter, BufferedReader bufferedReader){
+
+    public void closeEverything(Socket socket, BufferedWriter bufferedWriter, BufferedReader bufferedReader) {
         try {
             socket.close();
             bufferedReader.close();
@@ -71,11 +67,10 @@ public class Client {
     }
 
 
-
     public static void main(String[] args) throws IOException {
-        Socket socket = new Socket("localhost",5000);
+        Socket socket = new Socket("localhost", 5000);
         Client client = new Client(socket);
-        while (socket.isConnected()){
+        while (socket.isConnected()) {
             client.readMessage();
         }
     }

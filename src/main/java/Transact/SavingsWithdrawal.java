@@ -28,18 +28,17 @@ public class SavingsWithdrawal extends ServerCommunication {
                 currentBalance += amount;
                 dao.updateSavings(savingsBalance - amount, accountNumber);
                 dao.updateBalance(currentBalance, accountNumber);
-                dao.updateTransactionTracker(accountNumber, LocalDate.now(),"Savings Deposit",amount,0,currentBalance);
+                dao.updateTransactionTracker(accountNumber, LocalDate.now(), "Savings Deposit", amount, 0, currentBalance);
                 result = "OK";
                 message = "Withdrawal Successful";
-            }
-            else {
+            } else {
                 result = "ERROR";
                 message = "Withdrawal failed";
             }
-            response.put("result",result);
-            response.put("UUID",uuid);
-            response.put("message",message);
-            response.put("Balance",currentBalance);
+            response.put("result", result);
+            response.put("UUID", uuid);
+            response.put("message", message);
+            response.put("Balance", currentBalance);
             dao.closeConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
