@@ -39,15 +39,17 @@ public class MainServer implements Runnable {
             scanner = new Scanner(System.in);
             while (!serverSocket.isClosed()) {
                 // Read the next line of input from the keyboard
-                String serverCommand = scanner.nextLine();
-                ServerCommands command;
-                try {
-                    command = ServerCommands.returnCommand(serverCommand);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                System.out.println(command.execute().toString(4));
+                if (scanner.hasNextLine()) {
+                    String serverCommand = scanner.nextLine();
+                    ServerCommands command;
+                    try {
+                        command = ServerCommands.returnCommand(serverCommand);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println(command.execute().toString(4));
 
+                }
             }
         }).start();
     }

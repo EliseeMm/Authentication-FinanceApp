@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import java.sql.SQLException;
 
-public class CloseServer extends ServerCommands{
+public class CloseServer extends ServerCommands {
     public CloseServer() throws SQLException {
     }
 
